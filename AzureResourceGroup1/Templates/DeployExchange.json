@@ -102,6 +102,7 @@
     "vmOsSku": "2016-Datacenter",
     "vmAdminUsername": "[parameters('adminUsername')]",
     "vmAdminPassword": "[parameters('adminPassword')]",
+    "shortDomainName": "[split(parameters('adDomainName'),'.')[0]]",
     "vmName": "[parameters('exchangeVMName')]",
     "vmOsDiskName": "[concat('od', resourceGroup().name)]",
     "vmDataDiskName": "[concat('dd', resourceGroup().name)]",
@@ -109,6 +110,9 @@
     "vmDataDiskSize": "15",
     "domainJoinOptions": "3",
     "vmNicName": "[tolower(concat('nc', resourceGroup().name))]",
+    "exchNetworkArr": "[split(parameters('exchangeIP'),'.')]",
+    "exchStartIpNodeAddress": "[int(variables('exchNetworkArr')[3])]",
+    "exchNetworkString": "[concat(variables('exchNetworkArr')[0],'.',variables('exchNetworkArr')[1],'.',variables('exchNetworkArr')[2],'.')]",
     "adSubnetID": "[concat(variables('vnetID'),'/subnets/',parameters('adSubnetName'))]",
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
     "apiVersion": "2015-06-15",
@@ -148,8 +152,10 @@
       "properties": {
         "ipConfigurations": [
           {
-            "name": "ipconfigpublic",
+            "name": "[concat('exchipconfig', parameters('deploymentNumber'), copyIndex(1))]",
             "properties": {
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "[concat(variables('exchNetworkString'), add(copyIndex(),variables('exchStartIpNodeAddress')))]",
               "subnet": {
                 "id": "[variables('adSubnetID')]"
               }

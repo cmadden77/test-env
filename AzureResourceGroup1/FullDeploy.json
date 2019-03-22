@@ -103,17 +103,6 @@
       "type": "string",
       "metadata": { "description": "The address range of the desired subnet for clients." },
       "defaultValue": "10.199.3.0/24"
-    },
-    "clientsToDeploy": {
-      "type": "array",
-      "metadata": {
-        "description": "ClientsToDeploy, array, possible values: 7, 8, 10-1511, 10-1607, 10-1703. Examples: Single Win7 VM = [\"7\"]. Two Win7, one Win10 Creators = [\"7\", \"7\", \"10-1703\"]."
-      },
-      "defaultValue": [ "10-1607" ]
-    },
-    "clientImageBaseResource": {
-      "type": "string",
-      "metadata": { "description": "Enter the full Azure ARM resource string to the location where you store your client images, like /subscriptions/&lt;YourAzureSubscriptionID&gt;/resourceGroups/&lt;YourImageRG&gt;/providers/Microsoft.Compute/images/" }
     }
   },
   "variables": {
