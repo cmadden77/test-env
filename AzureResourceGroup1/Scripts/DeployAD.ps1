@@ -104,6 +104,9 @@ if (!(Test-Path -Path "$($completeFile)$step")) {
     # Configure the DNS client server IP addresses
     $adapter | Set-DnsClientServerAddress -ServerAddresses $DNS
 
+	# Unbind IPv6 address
+	$adapter | Disable-NetAdapterBinding –ComponentID ms_tcpip6
+
     #record that we got this far
     New-Item -ItemType file "$($completeFile)$step"
 }

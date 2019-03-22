@@ -371,8 +371,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
-        "virtualNetworkDNSUpdate",
-        "[concat('Microsoft.Compute/virtualMachines/', variables('adVMName'),'/extensions/Microsoft.Powershell.DSC')]"
+        "virtualNetworkDNSUpdate"
       ],
       "properties": {
         "mode": "Incremental",
