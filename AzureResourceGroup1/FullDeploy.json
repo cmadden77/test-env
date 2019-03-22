@@ -219,9 +219,6 @@
         "templateLink": { "uri": "[variables('nsgTemplateURI')]" },
         "parameters": {
           "virtualNetworkName": { "value": "[variables('virtualNetworkName')]" },
-          "adsubnet": { "value": "[ variables('adSubnetName') ]" },
-          "dmzsubnet": { "value": "[ variables('dmzSubnetName') ]" },
-          "clientsubnet": { "value": "[ variables('cliSubnetName') ]" },
           "subnets": { "value": "[ variables('subnets') ]" },
           "deploymentNumber": { "value": "[parameters('deploymentNumber')]" }
         }
