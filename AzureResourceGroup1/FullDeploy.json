@@ -124,8 +124,8 @@
     "wapVMNameSuffix": "px",
     "location": "[resourceGroup().location]",
     "companyNamePrefix": "[split(parameters('adDomainName'),'.')[0]]",
-    "adfsVMName": "toupper('TAZADFS00')",
-    "adVMName": "toupper('TAZAD0000')",
+    "adfsVMName": "[toupper('TAZADFS00')]",
+    "adVMName": "[toupper('TAZAD0000')]",
     "adNSGName": "[concat('INT-AD', parameters('deploymentNumber'))]",
     "virtualNetworkName": "[concat('vNet-10-199-0-0_16-USE2')]",
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
@@ -520,30 +520,6 @@
             "[variables('CopyCertToWAPTemplateUri')]"
           ],
           "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', variables('CopyCertToWAPTemplate'), ' -DCFQDN ', concat(variables('adVMName'), '.', parameters('adDomainName')), ' -adminuser ', parameters('adminUsername'), ' -password ', parameters('adminPassword'), ' -instance ', copyIndex(1), ' -WapFqdn ', variables('WAPPubIpDnsFQDN'))]"
-        }
-      }
-    },
-    {
-      "name": "clientVMs",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2015-01-01",
-      "dependsOn": [
-        "virtualNetworkDNSUpdate"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": { "uri": "[variables('clientTemplateURI')]" },
-        "parameters": {
-          "adminPassword": { "value": "[parameters('adminPassword')]" },
-          "adminUsername": { "value": "[parameters('adminUsername')]" },
-          "deploymentNumber": { "value": "[parameters('deploymentNumber')]" },
-          "virtualNetworkName": { "value": "[variables('virtualNetworkName')]" },
-          "cliSubnetName": { "value": "[variables('cliSubnetName')]" },
-          "adDomainName": { "value": "[parameters('adDomainName')]" },
-          "clientImageBaseResource": { "value": "[parameters('clientImageBaseResource')]" },
-          "clientsToDeploy": { "value": "[parameters('clientsToDeploy')]" },
-          "vmSize": { "value": "[parameters('vmSize')]" },
-          "assetLocation": { "value": "[parameters('assetLocation')]" }
         }
       }
     }
