@@ -120,7 +120,7 @@
     "modulesExchange": "ExchangeWorkload.zip",
     "modulesUrlExchange": "[concat(variables('modulesPath'),'DSC/',variables('modulesExchange'))]",
     "modulesExchangeData": "ExchangeWorkload.psd1",
-    "modulesUrlExchangeData": "[concat(variables('modulesPath'),'Templates/',variables('modulesExchangeData'))]",
+    "modulesUrlExchangeData": "[concat(variables('modulesPath'),'Scripts/',variables('modulesExchangeData'))]",
     "configurationFunctionExchange": "ExchangeWorkload.ps1\\InstallAndConfigureExchange",
     "nsgName": "[tolower(concat('ng', resourceGroup().name))]",
     "nsgID": "[resourceId('Microsoft.Network/networkSecurityGroups',variables('nsgName'))]",
