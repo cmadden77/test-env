@@ -275,7 +275,7 @@
       },
       "dependsOn": [
         "[concat('Microsoft.Compute/virtualMachines/',parameters('exchangeVMName'),copyindex(1))]",
-        "[concat('Microsoft.Compute/virtualMachines/',parameters('exchangeVMName'),copyindex(1),'/joindomain')]"
+        "[concat('Microsoft.Compute/virtualMachines/',parameters('exchangeVMName'),copyindex(1),'/extensions/joindomain')]"
       ],
       "properties": {
         "publisher": "Microsoft.Compute",
