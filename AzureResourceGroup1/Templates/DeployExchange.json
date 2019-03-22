@@ -138,7 +138,7 @@
     {
       "apiVersion": "2015-06-15",
       "type": "Microsoft.Network/networkInterfaces",
-      "name": "[concat(variables('vmNicName'),copyIndex())]",
+      "name": "[concat(variables('vmNicName'),copyIndex(1))]",
       "location": "[variables('location')]",
       "copy": {
         "name": "nicLoop",
@@ -161,7 +161,7 @@
     {
       "apiVersion": "2015-06-15",
       "type": "Microsoft.Compute/virtualMachines",
-      "name": "[concat(parameters('exchangeVMName'),copyIndex())]",
+      "name": "[concat(parameters('exchangeVMName'),copyIndex(1))]",
       "location": "[variables('location')]",
       "copy": {
         "name": "vmLoop",
@@ -169,7 +169,7 @@
       },
       "dependsOn": [
         "[concat('Microsoft.Storage/storageAccounts/',variables('uniqueStorageAccountName'))]",
-        "[concat('Microsoft.Network/networkInterfaces/',variables('vmNicName'),copyIndex())]"
+        "[concat('Microsoft.Network/networkInterfaces/',variables('vmNicName'),copyIndex(1))]"
       ],
       "properties": {
         "hardwareProfile": {
@@ -190,7 +190,7 @@
           "osDisk": {
             "name": "osdisk",
             "vhd": {
-              "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('uniqueStorageAccountName')),providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).primaryEndpoints.blob,variables('uniqueStorageAccountContainerName'),'/',variables('vmOsDiskName'),copyIndex(),'.vhd')]"
+              "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('uniqueStorageAccountName')),providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).primaryEndpoints.blob,variables('uniqueStorageAccountContainerName'),'/',variables('vmOsDiskName'),copyIndex(1),'.vhd')]"
             },
             "caching": "ReadWrite",
             "createOption": "FromImage"
@@ -198,9 +198,9 @@
           "dataDisks": [
             {
               "vhd": {
-                "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('uniqueStorageAccountName')),providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).primaryEndpoints.blob,variables('uniqueStorageAccountContainerName'),'/',variables('vmDataDiskName'),copyIndex(),'-0','.vhd')]"
+                "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('uniqueStorageAccountName')),providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).primaryEndpoints.blob,variables('uniqueStorageAccountContainerName'),'/',variables('vmDataDiskName'),copyIndex(1),'-0','.vhd')]"
               },
-              "name": "[concat(variables('vmDataDiskName'),copyIndex(),'-0')]",
+              "name": "[concat(variables('vmDataDiskName'),copyIndex(1),'-0')]",
               "createOption": "Empty",
               "caching": "None",
               "diskSizeGB": "[variables('vmDataDiskSize')]",
@@ -208,9 +208,9 @@
             },
             {
               "vhd": {
-                "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('uniqueStorageAccountName')),providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).primaryEndpoints.blob,variables('uniqueStorageAccountContainerName'),'/',variables('vmDataDiskName'),copyIndex(),'-1','.vhd')]"
+                "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('uniqueStorageAccountName')),providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]).primaryEndpoints.blob,variables('uniqueStorageAccountContainerName'),'/',variables('vmDataDiskName'),copyIndex(1),'-1','.vhd')]"
               },
-              "name": "[concat(variables('vmDataDiskName'),copyIndex(),'-1')]",
+              "name": "[concat(variables('vmDataDiskName'),copyIndex(1),'-1')]",
               "createOption": "Empty",
               "caching": "None",
               "diskSizeGB": "[variables('vmDataDiskSize')]",
@@ -221,7 +221,7 @@
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('vmNicName'),copyIndex()))]"
+              "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('vmNicName'),copyIndex(1)))]"
             }
           ]
         }
@@ -233,7 +233,7 @@
       "name": "[concat(parameters('exchangeVMName'), copyIndex(1), '/joindomain')]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/',parameters('exchangeVMName'),copyIndex())]"
+        "[concat('Microsoft.Compute/virtualMachines/',parameters('exchangeVMName'),copyIndex(1))]"
       ],
       "tags": {
         "displayName": "ExchangeVMJoin",
@@ -263,7 +263,7 @@
     {
       "apiVersion": "2015-06-15",
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(parameters('exchangeVMName'),copyIndex(),'/CustomScriptExtension')]",
+      "name": "[concat(parameters('exchangeVMName'),copyIndex(1),'/CustomScriptExtension')]",
       "location": "[variables('location')]",
       "tags": {
         "displayName": "ExchangeVMCustomScript",
@@ -274,7 +274,7 @@
         "count": "[variables('exchangeVMCount')]"
       },
       "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/',parameters('exchangeVMName'),copyIndex())]",
+        "[concat('Microsoft.Compute/virtualMachines/',parameters('exchangeVMName'),copyIndex(1))]",
         "[concat('Microsoft.Compute/virtualMachines/',parameters('exchangeVMName'), copyIndex(1), '/joindomain')]"
       ],
       "properties": {
@@ -293,7 +293,7 @@
     {
       "apiVersion": "2015-06-15",
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(parameters('exchangeVMName'),copyIndex(),'/dscExtension')]",
+      "name": "[concat(parameters('exchangeVMName'),copyIndex(1),'/dscExtension')]",
       "location": "[variables('location')]",
       "tags": {
         "displayName": "ExchangeVMDSC",
@@ -304,8 +304,8 @@
         "count": "[variables('exchangeVMCount')]"
       },
       "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/',parameters('exchangeVMName'),copyIndex())]",
-        "[concat('Microsoft.Compute/virtualMachines/',parameters('exchangeVMName'),copyIndex(),'/extensions/','CustomScriptExtension')]"
+        "[concat('Microsoft.Compute/virtualMachines/',parameters('exchangeVMName'),copyIndex(1))]",
+        "[concat('Microsoft.Compute/virtualMachines/',parameters('exchangeVMName'),copyIndex(1),'/extensions/','CustomScriptExtension')]"
       ],
       "properties": {
         "publisher": "Microsoft.Powershell",
