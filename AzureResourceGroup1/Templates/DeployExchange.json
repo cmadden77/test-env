@@ -230,7 +230,7 @@
     {
       "apiVersion": "[variables('apiVersion')]",
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(parameters('exchangeVMName'), copyindex(), '/joindomain')]",
+      "name": "[concat(parameters('exchangeVMName'),copyindex(),'/joindomain')]",
       "location": "[parameters('location')]",
       "dependsOn": [
         "[concat('Microsoft.Compute/virtualMachines/',parameters('exchangeVMName'),copyindex())]"
