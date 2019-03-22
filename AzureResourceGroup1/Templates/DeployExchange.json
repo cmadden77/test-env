@@ -113,18 +113,18 @@
     "adSubnetID": "[concat(variables('vnetID'),'/subnets/',parameters('adSubnetName'))]",
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
     "apiVersion": "2015-06-15",
-    "modulesPath": "https://raw.githubusercontent.com/cmadden77/testenv/master/",
+    "modulesPath": "https://raw.githubusercontent.com/cmadden77/test-env/master/AzureResourceGroup1/",
     "modulesExchange": "ExchangeWorkload.zip",
-    "modulesUrlExchange": "[concat(variables('modulesPath'),variables('modulesExchange'))]",
+    "modulesUrlExchange": "[concat(variables('modulesPath'),'DSC/',variables('modulesExchange'))]",
     "modulesExchangeData": "ExchangeWorkload.psd1",
-    "modulesUrlExchangeData": "[concat(variables('modulesPath'),variables('modulesExchangeData'))]",
+    "modulesUrlExchangeData": "[concat(variables('modulesPath'),'Templates/',variables('modulesExchangeData'))]",
     "configurationFunctionExchange": "ExchangeWorkload.ps1\\InstallAndConfigureExchange",
     "nsgName": "[tolower(concat('ng', resourceGroup().name))]",
     "nsgID": "[resourceId('Microsoft.Network/networkSecurityGroups',variables('nsgName'))]",
     "exchangeInstallerPath": "InstallerExchange",
-    "exchangeISOUri": "https://download.microsoft.com/download/1/F/7/1F777B44-32CB-4F3D-B486-3D0F566D79A9/ExchangeServer2016-x64-cu8.iso",
+    "exchangeISOUri": "https://download.microsoft.com/download/2/5/8/258D30CF-CA4C-433A-A618-FB7E6BCC4EEE/ExchangeServer2016-x64-cu12.iso",
     "modulesExchangeISODownload": "CSDownloadISO.ps1",
-    "modulesUrlExchangeISODownload": "[concat(variables('modulesPath'),variables('modulesExchangeISODownload'))]"
+    "modulesUrlExchangeISODownload": "[concat(variables('modulesPath'),'Scripts/',variables('modulesExchangeISODownload'))]"
   },
   "resources": [
     {
