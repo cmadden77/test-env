@@ -100,16 +100,15 @@
     "uniqueStorageAccountContainerName": "[tolower(concat('sc', resourceGroup().name))]",
     "location": "[resourceGroup().location]",
     "vmOsSku": "2016-Datacenter",
-    "vmAdminUsername": "vmadministrator",
-    "vmAdminPassword": "[subscription().subscriptionId]",
-    "vmName": "[concat('vm', resourceGroup().name)]",
+    "vmAdminUsername": "[parameters('adminUsername')]",
+    "vmAdminPassword": "[parameters('adminPassword')]",
+    "vmName": "[parameters('exchangeVMName')]",
     "vmOsDiskName": "[concat('od', resourceGroup().name)]",
     "vmDataDiskName": "[concat('dd', resourceGroup().name)]",
     "vmSize": "Standard_D3",
     "vmDataDiskSize": "15",
     "domainJoinOptions": "3",
     "vmNicName": "[tolower(concat('nc', resourceGroup().name))]",
-    "virtualNetworkName": "[tolower(concat('vn', resourceGroup().name))]",
     "adSubnetID": "[concat(variables('vnetID'),'/subnets/',parameters('adSubnetName'))]",
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
     "apiVersion": "2015-06-15",
@@ -162,7 +161,7 @@
     {
       "apiVersion": "2015-06-15",
       "type": "Microsoft.Compute/virtualMachines",
-      "name": "[concat(variables('vmName'),copyIndex())]",
+      "name": "[concat(parameters('exchangeVMName'),copyIndex())]",
       "location": "[variables('location')]",
       "copy": {
         "name": "vmLoop",
@@ -177,7 +176,7 @@
           "vmSize": "[variables('vmSize')]"
         },
         "osProfile": {
-          "computerName": "[variables('vmName')]",
+          "computerName": "[parameters('exchangeVMName')]",
           "adminUsername": "[variables('vmAdminUsername')]",
           "adminPassword": "[variables('vmAdminPassword')]"
         },
@@ -234,7 +233,7 @@
       "name": "[concat(parameters('exchangeVMName'), copyIndex(1), '/joindomain')]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/',variables('vmName'),copyIndex())]"
+        "[concat('Microsoft.Compute/virtualMachines/',parameters('exchangeVMName'),copyIndex())]"
       ],
       "tags": {
         "displayName": "ExchangeVMJoin",
@@ -264,7 +263,7 @@
     {
       "apiVersion": "2015-06-15",
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('vmName'),copyIndex(),'/CustomScriptExtension')]",
+      "name": "[concat(parameters('exchangeVMName'),copyIndex(),'/CustomScriptExtension')]",
       "location": "[variables('location')]",
       "tags": {
         "displayName": "ExchangeVMCustomScript",
@@ -275,7 +274,7 @@
         "count": "[variables('exchangeVMCount')]"
       },
       "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/',variables('vmName'),copyIndex())]",
+        "[concat('Microsoft.Compute/virtualMachines/',parameters('exchangeVMName'),copyIndex())]",
         "[concat('Microsoft.Compute/virtualMachines/',parameters('exchangeVMName'), copyIndex(1), '/joindomain')]"
       ],
       "properties": {
@@ -294,7 +293,7 @@
     {
       "apiVersion": "2015-06-15",
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(variables('vmName'),copyIndex(),'/dscExtension')]",
+      "name": "[concat(parameters('exchangeVMName'),copyIndex(),'/dscExtension')]",
       "location": "[variables('location')]",
       "tags": {
         "displayName": "ExchangeVMDSC",
@@ -305,8 +304,8 @@
         "count": "[variables('exchangeVMCount')]"
       },
       "dependsOn": [
-        "[concat('Microsoft.Compute/virtualMachines/',variables('vmName'),copyIndex())]",
-        "[concat('Microsoft.Compute/virtualMachines/',variables('vmName'),copyIndex(),'/extensions/','CustomScriptExtension')]"
+        "[concat('Microsoft.Compute/virtualMachines/',parameters('exchangeVMName'),copyIndex())]",
+        "[concat('Microsoft.Compute/virtualMachines/',parameters('exchangeVMName'),copyIndex(),'/extensions/','CustomScriptExtension')]"
       ],
       "properties": {
         "publisher": "Microsoft.Powershell",
