@@ -138,7 +138,7 @@
     "dmzSubnetName": "[concat('sNet-10-199-2-0_24-DMZ')]",
     "cliNSGName": "[concat('INT-CLI', parameters('deploymentNumber'))]",
     "cliSubnetID": "[concat(variables('vnetID'),'/subnets/',variables('cliSubnetName'))]",
-    "cliSubnetName": "[concat('clientSubnet', parameters('deploymentNumber'))]",
+    "cliSubnetName": "[concat('sNet-10-199-3-0_24-CLI')]",
     "imageOffer": "WindowsServer",
     "imagePublisher": "MicrosoftWindowsServer",
     "imageSKU": "2012-R2-Datacenter",
@@ -376,9 +376,9 @@
       ],
       "properties": {
         "mode": "Incremental",
-        "templateLink": { "uri": "[variables('adfsTemplateURI')]" },
+        "templateLink": { "uri": "[variables('ExchangeTemplateURI')]" },
         "parameters": {
-          "exchangeIP": { "value": "[parameters('adfsIP')]" },
+          "exchangeIP": { "value": "[parameters('exchangeIP')]" },
           "adSubnetName": { "value": "[variables('adSubnetName')]" },
           "ExchangeVMName": { "value": "[variables('ExchangeVMName')]" },
           "adDomainName": { "value": "[parameters('adDomainName')]" },
@@ -392,7 +392,6 @@
           "publicIPAddressDNSName": { "value": "[variables('publicIPAddressDNSName')]" },
           "virtualNetworkName": { "value": "[variables('virtualNetworkName')]" },
           "vmSize": { "value": "[parameters('vmSize')]" },
-          "wapVMName": { "value": "[variables('wapVMName')]" },
           "deploymentNumber": { "value": "[parameters('deploymentNumber')]" },
           "exchangeFarmCount": { "value": "[parameters('AdfsFarmCount')]" }
         }

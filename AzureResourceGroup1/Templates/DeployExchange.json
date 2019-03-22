@@ -24,7 +24,7 @@
     },
     "adDomainName": {
       "type": "string",
-      "defaultValue": "contoso.com"
+      "defaultValue": "vnagases.grp"
     },
     "adminPassword": {
       "type": "securestring",
@@ -74,7 +74,7 @@
     },
     "vmSize": {
       "type": "string",
-      "defaultValue": "Standard_D1_v2",
+      "defaultValue": "Standard_D2_v2",
       "metadata": {
         "description": "This is the allowed list of VM sizes"
       }
