@@ -25,7 +25,7 @@
     "cliNSGName": "[concat('INT-CLI', parameters('deploymentNumber'))]",
     "adSubnetName": "[parameters('subnets')[0].name]",
     "dmzSubnetName": "[parameters('subnets')[1].name]",
-    "cliSubnetName": "[parameters('subnets')[3].name]",
+    "cliSubnetName": "[parameters('subnets')[2].name]",
     "adsubnetrange": "[parameters('subnets')[0].properties.addressPrefix]",
     "dmzSubnetRange": "[parameters('subnets')[1].properties.addressPrefix]",
     "cliSubnetRange": "[parameters('subnets')[2].properties.addressPrefix]",
