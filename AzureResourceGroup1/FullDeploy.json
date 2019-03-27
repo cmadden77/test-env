@@ -167,6 +167,7 @@
     "CopyCertToWAPTemplateUri": "[concat(parameters('assetLocation'), 'Scripts/CopyCertToWAP.ps1')]",
     "adDSCConfigurationFunction": "adDSCConfiguration.ps1\\DomainController",
     "adcDSCConfigurationFunction": "adDSCConfiguration.ps1\\ADConnect",
+    "pkiDSCConfigurationFunction": "adDSCConfiguration.ps1\\RootCA",
     "subnets": [
       {
         "name": "[variables('adSubnetName')]",
@@ -407,6 +408,68 @@
       }
     },
     {
+      "name": "[concat(variables('pkiVMName'),'/Microsoft.Powershell.DSC')]",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "location": "[variables('location')]",
+      "apiVersion": "2015-06-15",
+      "dependsOn": [
+        "Microsoft.Resources/Deployments/pkiVMs"
+      ],
+      "tags": {
+        "displayName": "pkiDSC"
+      },
+      "properties": {
+        "publisher": "Microsoft.Powershell",
+        "type": "DSC",
+        "typeHandlerVersion": "2.21",
+        "forceUpdateTag": "1.02",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "modulesUrl": "[variables('adDSCTemplate')]",
+          "configurationFunction": "[variables('adcDSCConfigurationFunction')]",
+          "properties": [
+            {
+              "Name": "adcFarmCount",
+              "Value": "[parameters('AdfsFarmCount')]",
+              "TypeName": "System.Integer"
+            },
+            {
+              "Name": "AdminCreds",
+              "Value": {
+                "UserName": "[parameters('adminUsername')]",
+                "Password": "PrivateSettingsRef:AdminPassword"
+              },
+              "TypeName": "System.Management.Automation.PSCredential"
+            },
+            {
+              "Name": "adcIP",
+              "Value": "[parameters('adcIP')]",
+              "TypeName": "System.String"
+            },
+            {
+              "Name": "usersArray",
+              "Value": "[parameters('usersArray')]",
+              "TypeName": "System.Object"
+            },
+            {
+              "Name": "UserCreds",
+              "Value": {
+                "UserName": "user",
+                "Password": "PrivateSettingsRef:UserPassword"
+              },
+              "TypeName": "System.Management.Automation.PSCredential"
+            }
+          ]
+        },
+        "protectedSettings": {
+          "Items": {
+            "AdminPassword": "[parameters('adminPassword')]",
+            "UserPassword": "[parameters('defaultUserPassword')]"
+          }
+        }
+      }
+    },
+    {
       "name": "adfsVMs",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
@@ -460,7 +523,7 @@
           "virtualNetworkName": { "value": "[variables('virtualNetworkName')]" },
           "vmSize": { "value": "[parameters('vmSize')]" },
           "deploymentNumber": { "value": "[parameters('deploymentNumber')]" },
-          "adfsFarmCount": { "value": "[parameters('AdfsFarmCount')]" }
+          "adcFarmCount": { "value": "[parameters('AdfsFarmCount')]" }
         }
       }
     },
@@ -475,9 +538,9 @@
         "mode": "Incremental",
         "templateLink": { "uri": "[variables('adcTemplateURI')]" },
         "parameters": {
-          "pkiIP": { "value": "[parameters('pkiIP')]" },
+          "adcIP": { "value": "[parameters('pkiIP')]" },
           "adSubnetName": { "value": "[variables('adSubnetName')]" },
-          "pkiVMName": { "value": "[variables('pkiVMName')]" },
+          "adcVMName": { "value": "[variables('pkiVMName')]" },
           "adDomainName": { "value": "[parameters('adDomainName')]" },
           "adminPassword": { "value": "[parameters('adminPassword')]" },
           "adminUsername": { "value": "[parameters('adminUsername')]" },
@@ -487,7 +550,7 @@
           "virtualNetworkName": { "value": "[variables('virtualNetworkName')]" },
           "vmSize": { "value": "[parameters('vmSize')]" },
           "deploymentNumber": { "value": "[parameters('deploymentNumber')]" },
-          "adfsFarmCount": { "value": "[parameters('AdfsFarmCount')]" }
+          "adcFarmCount": { "value": "[parameters('AdfsFarmCount')]" }
         }
       }
     },
