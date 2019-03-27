@@ -403,7 +403,7 @@
               "TypeName": "System.String"
             },
             {
-              "Name": "adcFarmCount",
+              "Name": "adfsFarmCount",
               "Value": "[parameters('AdfsFarmCount')]",
               "TypeName": "System.Integer"
             },
@@ -416,8 +416,8 @@
               "TypeName": "System.Management.Automation.PSCredential"
             },
             {
-              "Name": "adcIP",
-              "Value": "[parameters('pkiIP')]",
+              "Name": "ADFSIPAddress",
+              "Value": "[parameters('adfsIP')]",
               "TypeName": "System.String"
             },
             {
@@ -554,6 +554,32 @@
           "vmSize": { "value": "[parameters('vmSize')]" },
           "deploymentNumber": { "value": "[parameters('deploymentNumber')]" },
           "exchangeFarmCount": { "value": "[parameters('AdfsFarmCount')]" }
+        }
+      }
+    },
+    {
+      "name": "MemberServers",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "virtualNetworkDNSUpdate"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": { "uri": "[variables('memberTemplateURI')]" },
+        "parameters": {
+          "adSubnetName": { "value": "[variables('adSubnetName')]" },
+          "MemberVMName": { "value": "[variables('MemberVMName')]" },
+          "adDomainName": { "value": "[parameters('adDomainName')]" },
+          "adminPassword": { "value": "[parameters('adminPassword')]" },
+          "adminUsername": { "value": "[parameters('adminUsername')]" },
+          "assetlocation": { "value": "[parameters('assetLocation')]" },
+          "location": { "value": "[variables('location')]" },
+          "networkInterfaceName": { "value": "[variables('NetworkInterfaceName')]" },
+          "virtualNetworkName": { "value": "[variables('virtualNetworkName')]" },
+          "vmSize": { "value": "[parameters('vmSize')]" },
+          "deploymentNumber": { "value": "[parameters('deploymentNumber')]" },
+          "MemberCount": { "value": "[parameters('MemberCount')]" }
         }
       }
     },
