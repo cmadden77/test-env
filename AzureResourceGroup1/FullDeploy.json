@@ -156,7 +156,7 @@
     "ExchangeTemplateURI": "[concat(parameters('assetLocation'),'Templates/DeployExchange.json')]",
     "adfsTemplateURI": "[concat(parameters('assetLocation'),'Templates/adfsDeploy.json')]",
     "adcTemplateURI": "[concat(parameters('assetLocation'),'Templates/DeployADC.json')]",
-    "pkiTemplateURI": "[concat(parameters('assetLocation'),'Templates/adfsDeploy.json')]",
+    "pkiTemplateURI": "[concat(parameters('assetLocation'),'Templates/DeployPKI.json')]",
     "nsgTemplateURI": "[concat(parameters('assetLocation'),'Templates/NSGs.json')]",
     "vnetTemplateURI": "[concat(parameters('assetLocation'),'Templates/deployVNet.json')]",
     "vnetDNSTemplateURI": "[concat(parameters('assetLocation'),'Templates/deployVNetDNS.json')]",
@@ -443,7 +443,7 @@
             },
             {
               "Name": "adcIP",
-              "Value": "[parameters('adcIP')]",
+              "Value": "[parameters('pkiIP')]",
               "TypeName": "System.String"
             },
             {
@@ -528,7 +528,7 @@
       }
     },
     {
-      "name": "pkiVM",
+      "name": "pkiVMs",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
@@ -536,11 +536,11 @@
       ],
       "properties": {
         "mode": "Incremental",
-        "templateLink": { "uri": "[variables('adcTemplateURI')]" },
+        "templateLink": { "uri": "[variables('pkiTemplateURI')]" },
         "parameters": {
-          "adcIP": { "value": "[parameters('pkiIP')]" },
+          "pkiIP": { "value": "[parameters('pkiIP')]" },
           "adSubnetName": { "value": "[variables('adSubnetName')]" },
-          "adcVMName": { "value": "[variables('pkiVMName')]" },
+          "pkiVMName": { "value": "[variables('pkiVMName')]" },
           "adDomainName": { "value": "[parameters('adDomainName')]" },
           "adminPassword": { "value": "[parameters('adminPassword')]" },
           "adminUsername": { "value": "[parameters('adminUsername')]" },
@@ -550,7 +550,7 @@
           "virtualNetworkName": { "value": "[variables('virtualNetworkName')]" },
           "vmSize": { "value": "[parameters('vmSize')]" },
           "deploymentNumber": { "value": "[parameters('deploymentNumber')]" },
-          "adcFarmCount": { "value": "[parameters('AdfsFarmCount')]" }
+          "pkiFarmCount": { "value": "[parameters('AdfsFarmCount')]" }
         }
       }
     },

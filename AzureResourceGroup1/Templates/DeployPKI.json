@@ -6,14 +6,14 @@
       "type": "string",
       "defaultValue": "adSubnet"
     },
-    "adcVMName": {
+    "pkiVMName": {
       "type": "string",
-      "defaultValue": "AZADC"
+      "defaultValue": "AZPKI"
     },
-    "adcIP": {
+    "pkiIP": {
       "type": "string",
       "metadata": { "description": "The IP Addresses assigned to the domain controllers (a, b). Remember the first IP in a subnet is .4 e.g. 10.0.0.0/16 reserves 10.0.0.0-3. Specify one IP per server - must match numberofVMInstances or deployment will fail.s" },
-      "defaultValue": "10.199.1.7"
+      "defaultValue": "10.199.1.8"
     },
     "adDomainName": {
       "type": "string",
@@ -65,7 +65,7 @@
         "description": "This is the allowed list of VM sizes"
       }
     },
-    "adcFarmCount": {
+    "pkiFarmCount": {
       "type": "string",
       "defaultValue": "1",
       "allowedValues": [ "1", "2", "3", "4", "5" ],
@@ -73,12 +73,12 @@
     }
   },
   "variables": {
-    "adcDeployCount": "[int(parameters('adcFarmCount'))]",
+    "pkiDeployCount": "[int(parameters('pkiFarmCount'))]",
     "shortDomainName": "[split(parameters('adDomainName'),'.')[0]]",
-    "adcNetworkArr": "[split(parameters('adcIP'),'.')]",
-    "adcStartIpNodeAddress": "[int(variables('adcNetworkArr')[3])]",
-    "adcNetworkString": "[concat(variables('adcNetworkArr')[0],'.',variables('adcNetworkArr')[1],'.',variables('adcNetworkArr')[2],'.')]",
-    "adcNICName": "[concat('adc-',parameters('NetworkInterfaceName'),parameters('deploymentNumber'))]",
+    "pkiNetworkArr": "[split(parameters('pkiIP'),'.')]",
+    "pkiStartIpNodeAddress": "[int(variables('pkiNetworkArr')[3])]",
+    "pkiNetworkString": "[concat(variables('pkiNetworkArr')[0],'.',variables('pkiNetworkArr')[1],'.',variables('pkiNetworkArr')[2],'.')]",
+    "pkiNICName": "[concat('pki-',parameters('NetworkInterfaceName'),parameters('deploymentNumber'))]",
     "adSubnetID": "[concat(variables('vnetID'),'/subnets/',parameters('adSubnetName'))]",
     "apiVersion": "2015-06-15",
     "computeApiVersion": "2016-04-30-preview",
@@ -88,19 +88,19 @@
     "imageSKU": "2012-R2-Datacenter",
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
     "adDSCTemplate": "[concat(parameters('assetLocation'),'DSC/adDSC.zip')]",
-    "adDSCConfigurationFunction": "adDSCConfiguration.ps1\\ADConnect"
+    "adDSCConfigurationFunction": "adDSCConfiguration.ps1\\pkionnect"
   },
   "resources": [
     {
       "apiVersion": "[variables('apiVersion')]",
       "type": "Microsoft.Network/networkInterfaces",
-      "name": "[concat(variables('adcNICName'), copyIndex(1))]",
+      "name": "[concat(variables('pkiNICName'), copyIndex(1))]",
       "location": "[parameters('location')]",
       "copy": {
-        "name": "adcNicCopy",
-        "count": "[variables('adcDeployCount')]"
+        "name": "pkiNicCopy",
+        "count": "[variables('pkiDeployCount')]"
       },
-      "tags": { "displayName": "adcNIC" },
+      "tags": { "displayName": "pkiNIC" },
       "dependsOn": [
       ],
       "properties": {
@@ -109,7 +109,7 @@
             "name": "[concat('adfsipconfig', parameters('deploymentNumber'), copyIndex(1))]",
             "properties": {
               "privateIPAllocationMethod": "Static",
-              "privateIPAddress": "[concat(variables('adcNetworkString'), add(copyIndex(),variables('adcStartIpNodeAddress')))]",
+              "privateIPAddress": "[concat(variables('pkiNetworkString'), add(copyIndex(),variables('pkiStartIpNodeAddress')))]",
               "subnet": {
                 "id": "[variables('adSubnetID')]"
               }
@@ -121,22 +121,22 @@
     {
       "apiVersion": "[variables('computeApiVersion')]",
       "type": "Microsoft.Compute/virtualMachines",
-      "name": "[concat(parameters('adcVMName'), copyIndex(1))]",
+      "name": "[concat(parameters('pkiVMName'), copyIndex(1))]",
       "location": "[parameters('location')]",
       "copy": {
         "name": "adfsVmCopy",
-        "count": "[variables('adcDeployCount')]"
+        "count": "[variables('pkiDeployCount')]"
       },
-      "tags": { "displayName": "adcVM" },
+      "tags": { "displayName": "pkiVM" },
       "dependsOn": [
-        "adcNicCopy"
+        "pkiNicCopy"
       ],
       "properties": {
         "hardwareProfile": {
           "vmSize": "[parameters('vmSize')]"
         },
         "osProfile": {
-          "computerName": "[concat(parameters('adcVMName'), copyIndex(1))]",
+          "computerName": "[concat(parameters('pkiVMName'), copyIndex(1))]",
           "adminUsername": "[parameters('adminUsername')]",
           "adminPassword": "[parameters('adminPassword')]"
         },
@@ -155,7 +155,7 @@
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceid('Microsoft.Network/networkInterfaces', concat(variables('adcNICName'), copyIndex(1)))]"
+              "id": "[resourceid('Microsoft.Network/networkInterfaces', concat(variables('pkiNICName'), copyIndex(1)))]"
             }
           ]
         }
@@ -166,18 +166,18 @@
     {
       "apiVersion": "[variables('apiVersion')]",
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(parameters('adcVMName'), copyIndex(1), '/joindomain')]",
+      "name": "[concat(parameters('pkiVMName'), copyIndex(1), '/joindomain')]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "adcVmCopy"
+        "pkiVmCopy"
       ],
       "tags": {
-        "displayName": "adcVMJoin",
+        "displayName": "pkiVMJoin",
         "isClient": "true"
       },
       "copy": {
         "name": "joinCopy",
-        "count": "[variables('adcDeployCount')]"
+        "count": "[variables('pkiDeployCount')]"
       },
       "properties": {
         "publisher": "Microsoft.Compute",
