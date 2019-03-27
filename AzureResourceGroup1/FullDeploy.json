@@ -116,8 +116,8 @@
     },
     "memberServerCount": {
       "type": "string",
-      "metadata": { "description": "The address range of the desired subnet for clients." },
-      "defaultValue": "10.199.3.0/24"
+      "metadata": { "description": "The Number of members servers required." },
+      "defaultValue": "2"
     }
   },
   "variables": {
@@ -153,10 +153,12 @@
     "ExchangeVMName": "[toupper('TAZEXCH00')]",
     "adcVMName": "[toupper('TAZADC00')]",
     "pkiVMName": "[toupper('TAZPKI00')]",
+    "memberVMName": "[toupper('TAZMEMBER00')]",
     "ExchangeTemplateURI": "[concat(parameters('assetLocation'),'Templates/DeployExchange.json')]",
     "adfsTemplateURI": "[concat(parameters('assetLocation'),'Templates/adfsDeploy.json')]",
     "adcTemplateURI": "[concat(parameters('assetLocation'),'Templates/DeployADC.json')]",
     "pkiTemplateURI": "[concat(parameters('assetLocation'),'Templates/DeployPKI.json')]",
+    "memberTemplateURI": "[concat(parameters('assetLocation'),'Templates/DeployMemberServers.json')]",
     "nsgTemplateURI": "[concat(parameters('assetLocation'),'Templates/NSGs.json')]",
     "vnetTemplateURI": "[concat(parameters('assetLocation'),'Templates/deployVNet.json')]",
     "vnetDNSTemplateURI": "[concat(parameters('assetLocation'),'Templates/deployVNetDNS.json')]",
@@ -579,7 +581,7 @@
           "virtualNetworkName": { "value": "[variables('virtualNetworkName')]" },
           "vmSize": { "value": "[parameters('vmSize')]" },
           "deploymentNumber": { "value": "[parameters('deploymentNumber')]" },
-          "MemberCount": { "value": "[parameters('MemberCount')]" }
+          "memberServerCount": { "value": "[parameters('memberServerCount')]" }
         }
       }
     },

@@ -60,15 +60,15 @@
         "description": "This is the allowed list of VM sizes"
       }
     },
-    "MemberCount": {
+    "memberServerCount": {
       "type": "string",
       "defaultValue": "2",
-      "allowedValues": [ "1", "2", "3", "4", "5","6","7","8","9","10" ],
+      "allowedValues": [ "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" ],
       "metadata": { "description": "Additional Servers that will be joined to the domain." }
     }
   },
   "variables": {
-    "DeployCount": "[int(parameters('MemberCount'))]",
+    "DeployCount": "[int(parameters('memberServerCount'))]",
     "shortDomainName": "[split(parameters('adDomainName'),'.')[0]]",
     "NICName": "[concat('mem-',parameters('NetworkInterfaceName'),parameters('deploymentNumber'))]",
     "adSubnetID": "[concat(variables('vnetID'),'/subnets/',parameters('adSubnetName'))]",
