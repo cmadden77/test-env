@@ -245,7 +245,7 @@ configuration InstallAndConfigureExchange
             Ensure = "Present"
 			DependsOn = "[WindowsFeature]WebWMI"
 		}
-		# Edge Transport Server Role
+		<# Edge Transport Server Role
 		WindowsFeature ADLDS {
 			Name = "ADLDS"
             Ensure = "Present"
@@ -295,7 +295,7 @@ configuration InstallAndConfigureExchange
 			SourcePath = "https://download.microsoft.com/download/2/C/4/2C47A5C1-A1F3-4843-B9FE-84C0032C61EC/UcmaRuntimeSetup.exe"
 			FileName = "UcmaRuntimeSetup.exe"
 			DestinationDirectoryPath = $downloadPath
-			DependsOn = "[xPendingReboot]RebootPostFirstDS"
+			DependsOn = "[WindowsFeature]WindowsIdentityFoundation"
 		}
 		# Install Unified Communication Manager API 4.0
         xInstaller InstallUCMA4
