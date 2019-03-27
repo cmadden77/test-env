@@ -116,7 +116,7 @@
     "adSubnetID": "[concat(variables('vnetID'),'/subnets/',parameters('adSubnetName'))]",
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
     "apiVersion": "2015-06-15",
-    "modulesPath": "https://raw.githubusercontent.com/cmadden77/test-env/master/AzureResourceGroup1/",
+    "modulesPath": "https://raw.githubusercontent.com/cmadden77/test-env/workinprogress/AzureResourceGroup1/",
     "modulesExchange": "ExchangeWorkload.zip",
     "modulesUrlExchange": "[concat(variables('modulesPath'),'DSC/',variables('modulesExchange'))]",
     "modulesExchangeData": "ExchangeWorkload.psd1",

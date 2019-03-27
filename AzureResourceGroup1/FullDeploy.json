@@ -4,7 +4,7 @@
   "parameters": {
     "assetLocation": {
       "type": "string",
-      "defaultValue": "https://raw.githubusercontent.com/cmadden77/test-env/master/AzureResourceGroup1/",
+      "defaultValue": "https://raw.githubusercontent.com/cmadden77/test-env/workinprogress/AzureResourceGroup1/",
       "metadata": { "description": "This is the location in which all the linked templates are stored." }
     },
     "adminUsername": {
