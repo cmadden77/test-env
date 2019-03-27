@@ -65,7 +65,7 @@
     },
     "vmSize": {
       "type": "string",
-      "defaultValue": "Standard_A2_v2",
+      "defaultValue": "Standard_A4_v2",
       "allowedValues": [ "Standard_A1_v2", "Standard_A2_v2", "Standard_A4_v2", "Standard_A2M_v2", "Standard_A4M_v2", "Standard_A4_v2", "Standard_D2_v2", "Standard_D3_v2", "Standard_D11_v2", "Standard_D12_v2", "Standard_B2ms", "Standard_B2s", "Standard_B4ms" ],
       "metadata": { "description": "Select a VM SKU (please ensure the SKU is available in your selected region)." }
     },
@@ -346,7 +346,7 @@
       }
     },
     {
-      "name": "[concat(variables('adcVMName'), copyIndex(1),'/Microsoft.Powershell.DSC')]",
+      "name": "[concat(variables('adcVMName'), '1','/Microsoft.Powershell.DSC')]",
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "location": "[variables('location')]",
       "apiVersion": "2015-06-15",
@@ -408,7 +408,7 @@
       }
     },
     {
-      "name": "[concat(variables('pkiVMName'), copyIndex(1),'/Microsoft.Powershell.DSC')]",
+      "name": "[concat(variables('pkiVMName'), '1','/Microsoft.Powershell.DSC')]",
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "location": "[variables('location')]",
       "apiVersion": "2015-06-15",
