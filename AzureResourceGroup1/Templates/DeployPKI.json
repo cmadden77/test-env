@@ -169,7 +169,6 @@
       "name": "[concat(parameters('pkiVMName'), copyIndex(1), '/joindomain')]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "pkiVmCopy"
       ],
       "tags": {
         "displayName": "pkiVMJoin",
