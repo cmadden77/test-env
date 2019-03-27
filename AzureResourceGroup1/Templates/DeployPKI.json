@@ -124,7 +124,7 @@
       "name": "[concat(parameters('pkiVMName'), copyIndex(1))]",
       "location": "[parameters('location')]",
       "copy": {
-        "name": "adfsVmCopy",
+        "name": "pkiVmCopy",
         "count": "[variables('pkiDeployCount')]"
       },
       "tags": { "displayName": "pkiVM" },
@@ -169,6 +169,7 @@
       "name": "[concat(parameters('pkiVMName'), copyIndex(1), '/joindomain')]",
       "location": "[parameters('location')]",
       "dependsOn": [
+        "pkiVmCopy"
       ],
       "tags": {
         "displayName": "pkiVMJoin",

@@ -124,7 +124,7 @@
       "name": "[concat(parameters('adcVMName'), copyIndex(1))]",
       "location": "[parameters('location')]",
       "copy": {
-        "name": "adfsVmCopy",
+        "name": "adcVmCopy",
         "count": "[variables('adcDeployCount')]"
       },
       "tags": { "displayName": "adcVM" },
