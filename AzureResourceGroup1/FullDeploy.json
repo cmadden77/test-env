@@ -366,37 +366,6 @@
           "modulesUrl": "[variables('adDSCTemplate')]",
           "configurationFunction": "[variables('adcDSCConfigurationFunction')]",
           "properties": [
-            {
-              "Name": "adcFarmCount",
-              "Value": "[parameters('AdfsFarmCount')]",
-              "TypeName": "System.Integer"
-            },
-            {
-              "Name": "AdminCreds",
-              "Value": {
-                "UserName": "[parameters('adminUsername')]",
-                "Password": "PrivateSettingsRef:AdminPassword"
-              },
-              "TypeName": "System.Management.Automation.PSCredential"
-            },
-            {
-              "Name": "adcIP",
-              "Value": "[parameters('adcIP')]",
-              "TypeName": "System.String"
-            },
-            {
-              "Name": "usersArray",
-              "Value": "[parameters('usersArray')]",
-              "TypeName": "System.Object"
-            },
-            {
-              "Name": "UserCreds",
-              "Value": {
-                "UserName": "user",
-                "Password": "PrivateSettingsRef:UserPassword"
-              },
-              "TypeName": "System.Management.Automation.PSCredential"
-            }
           ]
         },
         "protectedSettings": {
@@ -428,6 +397,11 @@
           "modulesUrl": "[variables('adDSCTemplate')]",
           "configurationFunction": "[variables('adcDSCConfigurationFunction')]",
           "properties": [
+            {
+              "Name": "Subject",
+              "Value": "[variables('WAPPubIpDnsFQDN')]",
+              "TypeName": "System.String"
+            },
             {
               "Name": "adcFarmCount",
               "Value": "[parameters('AdfsFarmCount')]",
