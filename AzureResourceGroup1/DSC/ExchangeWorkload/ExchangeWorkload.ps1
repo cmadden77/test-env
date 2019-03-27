@@ -72,18 +72,12 @@ configuration InstallAndConfigureExchange
             Ensure = "Present"
 			DependsOn = "[xPendingReboot]RebootPostInstallNet45"
 		}
-		# Mailbox Server Role
-		WindowsFeature HTTPActivation {
-			Name = "AS-HTTP-Activation"
-            Ensure = "Present"
-			DependsOn = "[WindowsFeature]RSATADDS"
-		}
 		# Media Foundation
 		WindowsFeature MediaFoundationInstall 
         {
             Name = "Server-Media-Foundation"
 			Ensure = "Present"
-			DependsOn = "[WindowsFeature]HTTPActivation"
+			DependsOn = "[WindowsFeature]RSATADDS"
         }
 		xPendingReboot RebootPostMediaFoundationInstall
         {
