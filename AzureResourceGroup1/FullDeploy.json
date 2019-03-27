@@ -89,6 +89,11 @@
       "metadata": { "description": "The IP Addresses assigned to the domain controllers (a, b). Remember the first IP in a subnet is .4 e.g. 10.199.0.0/16 reserves 10.199.0.0-3. Specify one IP per server - must match numberofVMInstances or deployment will fail." },
       "defaultValue": "10.199.1.5"
     },
+    "adcIP": {
+      "type": "string",
+      "metadata": { "description": "The IP Addresses assigned to the domain controllers (a, b). Remember the first IP in a subnet is .4 e.g. 10.199.0.0/16 reserves 10.199.0.0-3. Specify one IP per server - must match numberofVMInstances or deployment will fail." },
+      "defaultValue": "10.199.1.7"
+    },
     "exchangeIP": {
       "type": "string",
       "metadata": { "description": "The IP Addresses assigned to the domain controllers (a, b). Remember the first IP in a subnet is .4 e.g. 10.199.0.0/16 reserves 10.199.0.0-3. Specify one IP per server - must match numberofVMInstances or deployment will fail." },
@@ -136,6 +141,7 @@
     "storageAccountType": "Standard_LRS",
     "wapVMName": "[toupper('TAZWAP00')]",
     "ExchangeVMName": "[toupper('TAZEXCH00')]",
+    "adcVMName": "[toupper('TAZADC00')]",
     "ExchangeTemplateURI": "[concat(parameters('assetLocation'),'Templates/DeployExchange.json')]",
     "adfsTemplateURI": "[concat(parameters('assetLocation'),'Templates/adfsDeploy.json')]",
     "nsgTemplateURI": "[concat(parameters('assetLocation'),'Templates/NSGs.json')]",
@@ -147,7 +153,7 @@
     "CopyCertToWAPTemplate": "CopyCertToWAP.ps1",
     "CopyCertToWAPTemplateUri": "[concat(parameters('assetLocation'), 'Scripts/CopyCertToWAP.ps1')]",
     "adDSCConfigurationFunction": "adDSCConfiguration.ps1\\DomainController",
-    "aadDSCConfigurationFunction": "adDSCConfiguration.ps1\\ADConnect",
+    "adcDSCConfigurationFunction": "adDSCConfiguration.ps1\\ADConnect",
     "subnets": [
       {
         "name": "[variables('adSubnetName')]",
@@ -331,10 +337,10 @@
       "location": "[variables('location')]",
       "apiVersion": "2015-06-15",
       "dependsOn": [
-        "Microsoft.Resources/Deployments/aadVMs"
+        "Microsoft.Resources/Deployments/adcVMs"
       ],
       "tags": {
-        "displayName": "aadDSC"
+        "displayName": "adcDSC"
       },
       "properties": {
         "publisher": "Microsoft.Powershell",
@@ -344,15 +350,10 @@
         "autoUpgradeMinorVersion": true,
         "settings": {
           "modulesUrl": "[variables('adDSCTemplate')]",
-          "configurationFunction": "[variables('adDSCConfigurationFunction')]",
+          "configurationFunction": "[variables('adcDSCConfigurationFunction')]",
           "properties": [
             {
-              "Name": "Subject",
-              "Value": "[variables('WAPPubIpDnsFQDN')]",
-              "TypeName": "System.String"
-            },
-            {
-              "Name": "ADFSFarmCount",
+              "Name": "adcFarmCount",
               "Value": "[parameters('AdfsFarmCount')]",
               "TypeName": "System.Integer"
             },
@@ -365,8 +366,8 @@
               "TypeName": "System.Management.Automation.PSCredential"
             },
             {
-              "Name": "ADFSIPAddress",
-              "Value": "[parameters('adfsIP')]",
+              "Name": "adcIP",
+              "Value": "[parameters('adcIP')]",
               "TypeName": "System.String"
             },
             {
@@ -424,7 +425,7 @@
       }
     },
     {
-      "name": "aadVMs",
+      "name": "adcVMs",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2015-01-01",
       "dependsOn": [
@@ -434,21 +435,17 @@
         "mode": "Incremental",
         "templateLink": { "uri": "[variables('adfsTemplateURI')]" },
         "parameters": {
-          "adfsIP": { "value": "[parameters('adfsIP')]" },
+          "adcIP": { "value": "[parameters('adcIP')]" },
           "adSubnetName": { "value": "[variables('adSubnetName')]" },
-          "adfsVMName": { "value": "[variables('adfsVMName')]" },
+          "adcVMName": { "value": "[variables('adcVMName')]" },
           "adDomainName": { "value": "[parameters('adDomainName')]" },
           "adminPassword": { "value": "[parameters('adminPassword')]" },
           "adminUsername": { "value": "[parameters('adminUsername')]" },
           "assetlocation": { "value": "[parameters('assetLocation')]" },
-          "dmzSubnetName": { "value": "[variables('dmzSubnetName')]" },
-          "dmzNSGName": { "value": "[variables('dmzNSGName')]" },
           "location": { "value": "[variables('location')]" },
           "networkInterfaceName": { "value": "[variables('NetworkInterfaceName')]" },
-          "publicIPAddressDNSName": { "value": "[variables('publicIPAddressDNSName')]" },
           "virtualNetworkName": { "value": "[variables('virtualNetworkName')]" },
           "vmSize": { "value": "[parameters('vmSize')]" },
-          "wapVMName": { "value": "[variables('wapVMName')]" },
           "deploymentNumber": { "value": "[parameters('deploymentNumber')]" },
           "adfsFarmCount": { "value": "[parameters('AdfsFarmCount')]" }
         }

@@ -6,14 +6,14 @@
       "type": "string",
       "defaultValue": "adSubnet"
     },
-    "aadVMName": {
+    "adcVMName": {
       "type": "string",
-      "defaultValue": "AZAAD"
+      "defaultValue": "AZADC"
     },
-    "aadIP": {
+    "adcIP": {
       "type": "string",
       "metadata": { "description": "The IP Addresses assigned to the domain controllers (a, b). Remember the first IP in a subnet is .4 e.g. 10.0.0.0/16 reserves 10.0.0.0-3. Specify one IP per server - must match numberofVMInstances or deployment will fail.s" },
-      "defaultValue": "10.0.1.5"
+      "defaultValue": "10.199.1.7"
     },
     "adDomainName": {
       "type": "string",
@@ -65,7 +65,7 @@
         "description": "This is the allowed list of VM sizes"
       }
     },
-    "aadFarmCount": {
+    "adcFarmCount": {
       "type": "string",
       "defaultValue": "1",
       "allowedValues": [ "1", "2", "3", "4", "5" ],
@@ -73,12 +73,12 @@
     }
   },
   "variables": {
-    "aadDeployCount": "[int(parameters('aadFarmCount'))]",
+    "adcDeployCount": "[int(parameters('adcFarmCount'))]",
     "shortDomainName": "[split(parameters('adDomainName'),'.')[0]]",
-    "aadNetworkArr": "[split(parameters('aadIP'),'.')]",
-    "aadStartIpNodeAddress": "[int(variables('aadNetworkArr')[3])]",
-    "aadNetworkString": "[concat(variables('aadNetworkArr')[0],'.',variables('aadNetworkArr')[1],'.',variables('aadNetworkArr')[2],'.')]",
-    "aadNICName": "[concat('aad-',parameters('NetworkInterfaceName'),parameters('deploymentNumber'))]",
+    "adcNetworkArr": "[split(parameters('adcIP'),'.')]",
+    "adcStartIpNodeAddress": "[int(variables('adcNetworkArr')[3])]",
+    "adcNetworkString": "[concat(variables('adcNetworkArr')[0],'.',variables('adcNetworkArr')[1],'.',variables('adcNetworkArr')[2],'.')]",
+    "adcNICName": "[concat('adc-',parameters('NetworkInterfaceName'),parameters('deploymentNumber'))]",
     "adSubnetID": "[concat(variables('vnetID'),'/subnets/',parameters('adSubnetName'))]",
     "apiVersion": "2015-06-15",
     "computeApiVersion": "2016-04-30-preview",
@@ -94,15 +94,15 @@
     {
       "apiVersion": "[variables('apiVersion')]",
       "type": "Microsoft.Network/networkInterfaces",
-      "name": "[concat(variables('aadNICName'), copyIndex(1))]",
+      "name": "[concat(variables('adcNICName'), copyIndex(1))]",
       "location": "[parameters('location')]",
       "copy": {
-        "name": "aadNicCopy",
-        "count": "[variables('aadDeployCount')]"
+        "name": "adcNicCopy",
+        "count": "[variables('adcDeployCount')]"
       },
-      "tags": { "displayName": "aadNIC" },
+      "tags": { "displayName": "adcNIC" },
       "dependsOn": [
-        "aadIpCopy"
+        "adcIpCopy"
       ],
       "properties": {
         "ipConfigurations": [
@@ -110,7 +110,7 @@
             "name": "[concat('adfsipconfig', parameters('deploymentNumber'), copyIndex(1))]",
             "properties": {
               "privateIPAllocationMethod": "Static",
-              "privateIPAddress": "[concat(variables('aadNetworkString'), add(copyIndex(),variables('aadStartIpNodeAddress')))]",
+              "privateIPAddress": "[concat(variables('adcNetworkString'), add(copyIndex(),variables('adcStartIpNodeAddress')))]",
               "subnet": {
                 "id": "[variables('adSubnetID')]"
               }
@@ -122,22 +122,22 @@
     {
       "apiVersion": "[variables('computeApiVersion')]",
       "type": "Microsoft.Compute/virtualMachines",
-      "name": "[concat(parameters('aadVMName'), copyIndex(1))]",
+      "name": "[concat(parameters('adcVMName'), copyIndex(1))]",
       "location": "[parameters('location')]",
       "copy": {
         "name": "adfsVmCopy",
-        "count": "[variables('aadDeployCount')]"
+        "count": "[variables('adcDeployCount')]"
       },
-      "tags": { "displayName": "aadVM" },
+      "tags": { "displayName": "adcVM" },
       "dependsOn": [
-        "aadNicCopy"
+        "adcNicCopy"
       ],
       "properties": {
         "hardwareProfile": {
           "vmSize": "[parameters('vmSize')]"
         },
         "osProfile": {
-          "computerName": "[concat(parameters('aadVMName'), copyIndex(1))]",
+          "computerName": "[concat(parameters('adcVMName'), copyIndex(1))]",
           "adminUsername": "[parameters('adminUsername')]",
           "adminPassword": "[parameters('adminPassword')]"
         },
@@ -156,7 +156,7 @@
         "networkProfile": {
           "networkInterfaces": [
             {
-              "id": "[resourceid('Microsoft.Network/networkInterfaces', concat(variables('aadNICName'), copyIndex(1)))]"
+              "id": "[resourceid('Microsoft.Network/networkInterfaces', concat(variables('adcNICName'), copyIndex(1)))]"
             }
           ]
         }
@@ -167,18 +167,18 @@
     {
       "apiVersion": "[variables('apiVersion')]",
       "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "[concat(parameters('aadVMName'), copyIndex(1), '/joindomain')]",
+      "name": "[concat(parameters('adcVMName'), copyIndex(1), '/joindomain')]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "aadVmCopy"
+        "adcVmCopy"
       ],
       "tags": {
-        "displayName": "aadVMJoin",
+        "displayName": "adcVMJoin",
         "isClient": "true"
       },
       "copy": {
         "name": "joinCopy",
-        "count": "[variables('aadDeployCount')]"
+        "count": "[variables('adcDeployCount')]"
       },
       "properties": {
         "publisher": "Microsoft.Compute",
