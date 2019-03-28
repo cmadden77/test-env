@@ -153,7 +153,7 @@
     "ExchangeVMName": "[toupper('TAZEXCH00')]",
     "adcVMName": "[toupper('TAZADC00')]",
     "pkiVMName": "[toupper('TAZPKI00')]",
-    "memberVMName": "[toupper('TAZMEMBER00')]",
+    "memberVMName": "[toupper('TAZMEMBER0')]",
     "ExchangeTemplateURI": "[concat(parameters('assetLocation'),'Templates/DeployExchange.json')]",
     "adfsTemplateURI": "[concat(parameters('assetLocation'),'Templates/adfsDeploy.json')]",
     "adcTemplateURI": "[concat(parameters('assetLocation'),'Templates/DeployADC.json')]",
@@ -397,7 +397,7 @@
         "autoUpgradeMinorVersion": true,
         "settings": {
           "modulesUrl": "[variables('adDSCTemplate')]",
-          "configurationFunction": "[variables('adcDSCConfigurationFunction')]",
+          "configurationFunction": "[variables('pkiDSCConfigurationFunction')]",
           "properties": [
             {
               "Name": "Subject",

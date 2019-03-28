@@ -8,11 +8,11 @@
     },
     "MemberVMName": {
       "type": "string",
-      "defaultValue": "AZPKI"
+      "defaultValue": "TAZMEMBER0"
     },
     "adDomainName": {
       "type": "string",
-      "defaultValue": "contoso.com"
+      "defaultValue": "vnagases.grp"
     },
     "adminPassword": {
       "type": "securestring",
@@ -72,6 +72,10 @@
     "shortDomainName": "[split(parameters('adDomainName'),'.')[0]]",
     "NICName": "[concat('mem-',parameters('NetworkInterfaceName'),parameters('deploymentNumber'))]",
     "adSubnetID": "[concat(variables('vnetID'),'/subnets/',parameters('adSubnetName'))]",
+    "memberstartip": "10.199.1.20",
+    "memberNetworkArr": "[split(variables('memberstartip'),'.')]",
+    "memberstartIpNodeAddress": "[int(variables('memberNetworkArr')[3])]",
+    "memberNetworkString": "[concat(variables('memberNetworkArr')[0],'.',variables('memberNetworkArr')[1],'.',variables('memberNetworkArr')[2],'.')]",
     "apiVersion": "2015-06-15",
     "computeApiVersion": "2016-04-30-preview",
     "domainJoinOptions": "3",
@@ -103,7 +107,8 @@
           {
             "name": "[concat('adfsipconfig', parameters('deploymentNumber'), copyIndex())]",
             "properties": {
-              "privateIPAllocationMethod": "Dynamic",
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "[concat(variables('memberNetworkString'), add(copyIndex(),variables('memberStartIpNodeAddress')))]",
               "subnet": {
                 "id": "[variables('adSubnetID')]"
               }
@@ -163,10 +168,10 @@
       "name": "[concat(parameters('MemberVMName'), copyIndex(), '/joindomain')]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "pkiVmCopy"
+        "memberVmCopy"
       ],
       "tags": {
-        "displayName": "pkiVMJoin",
+        "displayName": "memberVMJoin",
         "isClient": "true"
       },
       "copy": {
