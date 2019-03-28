@@ -194,35 +194,6 @@
           "Password": "[parameters('adminPassword')]"
         }
       }
-    },
-
-    {
-      "name": "[concat('shutdown-computevm-', parameters('MemberVMName'), copyIndex())]",
-      "type": "Microsoft.DevTestLab/schedules",
-      "apiVersion": "2017-04-26-preview",
-      "location": "[parameters('location')]",
-      "copy": {
-        "name": "memberShutdown",
-        "count": "[variables('DeployCount')]"
-      },
-      "dependsOn": [
-        "memberVmCopy"
-      ],
-      "properties": {
-        "status": "[variables('autoShutdownStatus')]",
-        "taskType": "ComputeVmShutdownTask",
-        "dailyRecurrence": {
-          "time": "[variables('autoShutdownTime')]"
-        },
-        "timeZoneId": "[variables('autoShutdownTimeZone')]",
-        "targetResourceId": "[concat(resourceId('Microsoft.Compute/virtualMachines', parameters('MemberVMName'), copyIndex()))]",
-        "notificationSettings": {
-          "status": "[variables('autoShutdownNotificationStatus')]",
-          "notificationLocale": "[variables('autoShutdownNotificationLocale')]",
-          "timeInMinutes": "30"
-        }
-      },
-      "tags": {}
     }
   ],
   "outputs": {
