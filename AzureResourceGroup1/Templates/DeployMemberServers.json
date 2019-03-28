@@ -196,6 +196,10 @@
       "type": "Microsoft.DevTestLab/schedules",
       "apiVersion": "2017-04-26-preview",
       "location": "[parameters('location')]",
+      "copy": {
+        "name": "memberShutdown",
+        "count": "[variables('DeployCount')]"
+      },
       "dependsOn": [
         "memberVmCopy"
       ],
