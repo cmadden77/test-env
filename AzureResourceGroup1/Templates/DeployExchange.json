@@ -342,31 +342,6 @@
           "DataBlobUri": "[variables('modulesUrlExchangeData')]"
         }
       }
-    },
-
-    {
-      "name": "[concat('shutdown-computevm-', parameters('exchangeVMName'), copyIndex(1))]",
-      "type": "Microsoft.DevTestLab/schedules",
-      "apiVersion": "2017-04-26-preview",
-      "location": "[parameters('location')]",
-      "dependsOn": [
-        "[concat(parameters('exchangeVMName'),copyindex(1),'/dscExtension')]"
-      ],
-      "properties": {
-        "status": "[variables('autoShutdownStatus')]",
-        "taskType": "ComputeVmShutdownTask",
-        "dailyRecurrence": {
-          "time": "[variables('autoShutdownTime')]"
-        },
-        "timeZoneId": "[variables('autoShutdownTimeZone')]",
-        "targetResourceId": "[concat(resourceId('Microsoft.Compute/virtualMachines', parameters('exchangeVMName'), copyIndex(1)))]",
-        "notificationSettings": {
-          "status": "[variables('autoShutdownNotificationStatus')]",
-          "notificationLocale": "[variables('autoShutdownNotificationLocale')]",
-          "timeInMinutes": "30"
-        }
-      },
-      "tags": {}
     }
   ]
 }

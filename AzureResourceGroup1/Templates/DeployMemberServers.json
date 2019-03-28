@@ -118,7 +118,7 @@
       "name": "[concat(parameters('MemberVMName'), copyIndex())]",
       "location": "[parameters('location')]",
       "copy": {
-        "name": "pkiVmCopy",
+        "name": "memberVmCopy",
         "count": "[variables('DeployCount')]"
       },
       "tags": { "displayName": "VM" },
@@ -197,7 +197,7 @@
       "apiVersion": "2017-04-26-preview",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[concat(parameters('MemberVMName'), copyIndex(), '/joindomain')]"
+        "memberVmCopy"
       ],
       "properties": {
         "status": "[variables('autoShutdownStatus')]",
