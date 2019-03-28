@@ -287,7 +287,7 @@ configuration InstallAndConfigureExchange
             Name      = "AfterFirstDS"
             DependsOn = "[xADDomain]FirstDS"
         }
-        #>
+        #
         # Download Unified Communication Manager API 4.0
         xDownloadFile DownloadUCMA4
 		{
@@ -329,14 +329,14 @@ configuration InstallAndConfigureExchange
         {
             Name      = "Aftervisualc2013"
             DependsOn = "[xInstaller]Installvisualc2013"
-        }
-		# Install Exchange 2016 CU1
+        } #>
+		# Install Exchange 2016 CU12
         xExchInstall InstallExchange
         {
             Path = "$exchangeInstallerPath\setup.exe"
             Arguments = "/Mode:Install /Role:Mailbox /OrganizationName:ExchOrg /TargetDir:F:\Exchange /IAcceptExchangeServerLicenseTerms"
             Credential = $DomainCreds
-            DependsOn = '[xPendingReboot]RebootPostvisualc2013'
+            DependsOn = "[WindowsFeature]WindowsIdentityFoundation"
 			PsDscRunAsCredential = $DomainCreds
         }
 		#xExchangeValidate ValidateExchange2016

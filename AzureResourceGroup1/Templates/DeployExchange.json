@@ -127,6 +127,8 @@
     "exchangeISOUri": "https://download.microsoft.com/download/2/5/8/258D30CF-CA4C-433A-A618-FB7E6BCC4EEE/ExchangeServer2016-x64-cu12.iso",
     "modulesExchangeISODownload": "CSDownloadISO.ps1",
     "modulesUrlExchangeISODownload": "[concat(variables('modulesPath'),'Scripts/',variables('modulesExchangeISODownload'))]",
+    "UCMA4URL": "https://download.microsoft.com/download/2/C/4/2C47A5C1-A1F3-4843-B9FE-84C0032C61EC/UcmaRuntimeSetup.exe",
+    "vcredistURL": "https://download.microsoft.com/download/2/E/6/2E61CFA4-993B-4DD4-91DA-3737CD5CD6E3/vcredist_x64.exe",
     "autoShutdownStatus": "Enabled",
     "autoShutdownTime": "19:00",
     "autoShutdownTimeZone": "Eastern Standard Time",
@@ -296,7 +298,7 @@
           "fileUris": [
             "[variables('modulesUrlExchangeISODownload')]"
           ],
-          "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -file ',variables('modulesExchangeISODownload'),' -uri ',variables('exchangeISOUri'),' -destination ',variables('exchangeInstallerPath'))]"
+          "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -file ',variables('modulesExchangeISODownload'),' -uri ',variables('exchangeISOUri'),' -destination ',variables('exchangeInstallerPath'),' -urlUCMA4 ',variables('UCMA4URL'),' -urlVcredist ',variables('vcredistURL'))]"
         }
       }
     },
