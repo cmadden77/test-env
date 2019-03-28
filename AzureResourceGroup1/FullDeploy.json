@@ -167,7 +167,7 @@
     "DeployADFSFarmTemplateUri": "[concat(parameters('assetLocation'), 'Scripts/InstallADFS.ps1')]",
     "CopyCertToWAPTemplate": "CopyCertToWAP.ps1",
     "CopyCertToWAPTemplateUri": "[concat(parameters('assetLocation'), 'Scripts/CopyCertToWAP.ps1')]",
-    "adDSCConfigurationFunction": "adDSCConfiguration.ps1\\DomainController",
+    "adDSCConfigurationFunction": "adDSCConfiguration.ps1\\DomainControllerMod",
     "adcDSCConfigurationFunction": "adDSCConfiguration.ps1\\ADConnect",
     "pkiDSCConfigurationFunction": "adDSCConfiguration.ps1\\RootCA",
     "subnets": [
