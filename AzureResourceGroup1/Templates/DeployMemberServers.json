@@ -78,7 +78,12 @@
     "imageOffer": "WindowsServer",
     "imagePublisher": "MicrosoftWindowsServer",
     "imageSKU": "2016-Datacenter",
-    "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]"
+    "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
+    "autoShutdownStatus": "Enabled",
+    "autoShutdownTime": "19:00",
+    "autoShutdownTimeZone": "Eastern Standard Time",
+    "autoShutdownNotificationStatus": "Disabled",
+    "autoShutdownNotificationLocale": "en"
   },
   "resources": [
     {
@@ -184,6 +189,31 @@
           "Password": "[parameters('adminPassword')]"
         }
       }
+    },
+
+    {
+      "name": "[concat('shutdown-computevm-', parameters('MemberVMName'), copyIndex())]",
+      "type": "Microsoft.DevTestLab/schedules",
+      "apiVersion": "2017-04-26-preview",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[concat(parameters('MemberVMName'), copyIndex(), '/joindomain')]"
+      ],
+      "properties": {
+        "status": "[variables('autoShutdownStatus')]",
+        "taskType": "ComputeVmShutdownTask",
+        "dailyRecurrence": {
+          "time": "[variables('autoShutdownTime')]"
+        },
+        "timeZoneId": "[variables('autoShutdownTimeZone')]",
+        "targetResourceId": "[concat(resourceId('Microsoft.Compute/virtualMachines', parameters('MemberVMName'), copyIndex()))]",
+        "notificationSettings": {
+          "status": "[variables('autoShutdownNotificationStatus')]",
+          "notificationLocale": "[variables('autoShutdownNotificationLocale')]",
+          "timeInMinutes": "30"
+        }
+      },
+      "tags": {}
     }
   ],
   "outputs": {
