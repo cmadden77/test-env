@@ -239,6 +239,11 @@ configuration InstallAndConfigureExchange
             Ensure = "Present"
 			DependsOn = "[WindowsFeature]WebWMI"
 		}
+		WindowsFeature NET-WCF-HTTP-Activation45 {
+			Name = "Windows-Identity-Foundation"
+            Ensure = "Present"
+			DependsOn = "[WindowsFeature]WindowsIdentityFoundation"
+		}
 		<# Edge Transport Server Role
 		WindowsFeature ADLDS {
 			Name = "ADLDS"
@@ -291,13 +296,20 @@ configuration InstallAndConfigureExchange
 			DestinationDirectoryPath = $downloadPath
 			DependsOn = "[WindowsFeature]WindowsIdentityFoundation"
 		}
+		# Download Visual C++ 2013 
+        xDownloadFile Downloadvisualc2013
+		{
+			SourcePath = "https://download.microsoft.com/download/2/E/6/2E61CFA4-993B-4DD4-91DA-3737CD5CD6E3/vcredist_x64.exe"
+			FileName = "vcredist_x64.exe"
+			DestinationDirectoryPath = $downloadPath
+			DependsOn = "[WindowsFeature]DownloadUCMA4"
+		}
 		# Install Unified Communication Manager API 4.0
         xInstaller InstallUCMA4
 		{
 			Path = "$downloadPath\UcmaRuntimeSetup.exe"
 			Arguments = "-q"
-			RegistryKey = "NA"
-			DependsOn = "[xDownloadFile]DownloadUCMA4"
+			DependsOn = "[xDownloadFile]Downloadvisualc2013"
 		}
 		# Reboot node if necessary
 		xPendingReboot RebootPostInstallUCMA4
@@ -305,13 +317,26 @@ configuration InstallAndConfigureExchange
             Name      = "AfterUCMA4"
             DependsOn = "[xInstaller]InstallUCMA4"
         }
+		# Install Visual C++ 2013 
+        xInstaller Installvisualc2013
+		{
+			Path = "$downloadPath\vcredist_x64.exe"
+			Arguments = "-q"
+			DependsOn = "[xPendingReboot]RebootPostInstallUCMA4"
+		}
+		# Reboot node if necessary
+		xPendingReboot RebootPostvisualc2013
+        {
+            Name      = "Aftervisualc2013"
+            DependsOn = "[xInstaller]Installvisualc2013"
+        }
 		# Install Exchange 2016 CU1
         xExchInstall InstallExchange
         {
             Path = "$exchangeInstallerPath\setup.exe"
             Arguments = "/Mode:Install /Role:Mailbox /OrganizationName:ExchOrg /TargetDir:F:\Exchange /IAcceptExchangeServerLicenseTerms"
             Credential = $DomainCreds
-            DependsOn = '[xPendingReboot]RebootPostInstallUCMA4'
+            DependsOn = '[xPendingReboot]RebootPostvisualc2013'
 			PsDscRunAsCredential = $DomainCreds
         }
 		#xExchangeValidate ValidateExchange2016
