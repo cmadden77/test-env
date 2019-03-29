@@ -239,8 +239,8 @@ configuration InstallAndConfigureExchange
             Ensure = "Present"
 			DependsOn = "[WindowsFeature]WebWMI"
 		}
-		WindowsFeature NET-WCF-HTTP-Activation45 {
-			Name = "Windows-Identity-Foundation"
+		WindowsFeature NETWCFHTTPActivation45 {
+			Name = "NET-WCF-HTTP-Activation45"
             Ensure = "Present"
 			DependsOn = "[WindowsFeature]WindowsIdentityFoundation"
 		}
