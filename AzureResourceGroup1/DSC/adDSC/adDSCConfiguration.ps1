@@ -1,6 +1,6 @@
 
 
-configuration DomainControllerMod
+configuration DCTest
 {
    param
    (
@@ -71,7 +71,7 @@ configuration DomainControllerMod
             DependsOn = "[File]SrcFolder"
         }
     }
-}
+}adDSC
 
 configuration DomainController
 {
