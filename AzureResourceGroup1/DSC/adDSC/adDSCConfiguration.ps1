@@ -26,7 +26,7 @@ configuration DCTest
         [Int]$RetryIntervalSec=30
     )
     
-    $wmiDomain      = Get-WmiObject Win32_NTDomain -Filter "DnsForestName = "$( (Get-WmiObject Win32_ComputerSystem).Domain)""
+    $wmiDomain      = Get-WmiObject Win32_NTDomain -Filter "DnsForestName = '$( (Get-WmiObject Win32_ComputerSystem).Domain)'"
     $shortDomain    = $wmiDomain.DomainName
     $DomainName     = $wmidomain.DnsForestName
     $ComputerName   = $wmiDomain.PSComputerName
@@ -71,7 +71,7 @@ configuration DCTest
             DependsOn = "[File]SrcFolder"
         }
     }
-}adDSC
+}
 
 configuration DomainController
 {
@@ -663,18 +663,6 @@ configuration ADConnect
             DebugMode = "All"
             RebootNodeIfNeeded = $true
         }
-        <#
-        WindowsFeature ADCS-Cert-Authority
-        {
-            Ensure = "Present"
-            Name = "ADCS-Cert-Authority"
-        }
-
-        WindowsFeature RSAT-ADCS-Mgmt
-        {
-            Ensure = "Present"
-            Name = "RSAT-ADCS-Mgmt"
-        }#>
 
         File SrcFolder
         {
