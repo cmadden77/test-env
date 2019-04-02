@@ -19,7 +19,7 @@ configuration DCTest
         [Int]$RetryCount=20,
         [Int]$RetryIntervalSec=30
     )
-    
+    <#
     $wmiDomain      = Get-WmiObject Win32_NTDomain -Filter "DnsForestName = '$( (Get-WmiObject Win32_ComputerSystem).Domain)'"
     $shortDomain    = $wmiDomain.DomainName
     $DomainName     = $wmidomain.DnsForestName
@@ -35,11 +35,11 @@ configuration DCTest
 
     $CertPw         = $AdminCreds.Password
     $ClearPw        = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($CertPw))
-
+	
     Import-DscResource -ModuleName xComputerManagement,xNetworking,xSmbShare,xAdcsDeployment,xCertificate,PSDesiredStateConfiguration
 
     [System.Management.Automation.PSCredential]$DomainCreds = New-Object System.Management.Automation.PSCredential ("${shortDomain}\$($Admincreds.UserName)", $Admincreds.Password)
-    
+    #>
     Node "localhost"
     {
         LocalConfigurationManager
