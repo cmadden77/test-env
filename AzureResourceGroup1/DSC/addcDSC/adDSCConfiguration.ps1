@@ -358,10 +358,10 @@ configuration DCTest
 	<#
     $CertPw         = $AdminCreds.Password
     $ClearPw        = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($CertPw))
-
+	#>
     [System.Management.Automation.PSCredential]$DomainCreds = New-Object System.Management.Automation.PSCredential ("${shortDomain}\$($Admincreds.UserName)", $Admincreds.Password)
-    #>
-	Import-DscResource -ModuleName xComputerManagement,xNetworking,xSmbShare
+    
+	Import-DscResource -ModuleName xComputerManagement,xNetworking,xSmbShare,xDnsServer
 
     Node 'localhost'
     {
@@ -382,33 +382,29 @@ configuration DCTest
             ReadAccess = "Authenticated Users"
             DependsOn = "[File]SrcFolder"
         }
+   
+        xDnsServerADZone addadfsfarm
+        {
+            Name = $Subject
+            DynamicUpdate = 'Secure'
+            ReplicationScope = 'Forest'
+            ComputerName = $CAServerFQDN 
+            Credential = $DomainCreds
+            Ensure = 'Present'
+            DependsOn = "[xSmbShare]SrcShare"
+        }
 
-		<#
-        for($instance=1; $instance -le $ADFSFarmCount; $instance++) {
+        xDnsRecord adfsrecord
+        {
+            Name = ""
+            Target = $ADFSIPAddress
+            Zone = $Subject
+            Type = "ARecord"
+            Ensure = "Present"
+            DependsOn = "[xDnsServerADZone]addadfsfarm"
+        }
 
-			Script "UpdateDNS$instance"
-			{
-				SetScript  = {
-								$NodeAddr  = ([int]$($using:instance) + [int]$($using:adfsStartIpNodeAddress)) - 1
-								$IPAddress = "$($using:adfsNetworkString)$NodeAddr"
-
-								$s        = $using:subject;
-								$s        = $s -f $using:instance
-								$ZoneName = $s
-								$Zone     = Add-DnsServerPrimaryZone -Name $ZoneName -ReplicationScope Forest -PassThru
-								$rec      = Add-DnsServerResourceRecordA -ZoneName $ZoneName -Name "@" -AllowUpdateAny -IPv4Address $IPAddress
-							 }
-
-				GetScript =  { @{} }
-				TestScript = { 
-					$s        = $using:subject;
-					$s        = $s -f $using:instance
-					$ZoneName = $s
-					$Zone = Get-DnsServerZone -Name $ZoneName -ErrorAction SilentlyContinue
-					return ($Zone -ine $null)
-				}
-			}
-		}	#>
+		
     }
 }
 
