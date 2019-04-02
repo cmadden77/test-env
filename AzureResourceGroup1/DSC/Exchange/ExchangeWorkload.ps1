@@ -54,11 +54,11 @@ configuration InstallAndConfigureExchange
             DriveLetter = 'F'
 			DependsOn = '[xWaitforDisk]Disk2'
         }
-		# Reboot node if necessary
+		# Reboot node if necessary no longer needed
 		xPendingReboot RebootPostInstallNet45
         {
             Name      = "AfterNet452"
-			DependsOn = "[xPSWindowsUpdate]InstallNet45"
+			DependsOn = "[xDisk]Volume"
         }
 		# Install Exchange 2016 Pre-requisits | Reference: https://technet.microsoft.com/en-us/library/bb691354(v=exchg.160).aspx
 		# Active Directory
@@ -237,7 +237,7 @@ configuration InstallAndConfigureExchange
 		WindowsFeature NETWCFHTTPActivation45 {
 			Name = "NET-WCF-HTTP-Activation45"
             Ensure = "Present"
-			DependsOn = "[WindowsFeature]WindowsIdentityFoundation"
+			DependsOn = "[WindowsFeature]NETWCFHTTPActivation45"
 		}
 		# Install Exchange 2016 CU12
         xExchInstall InstallExchange

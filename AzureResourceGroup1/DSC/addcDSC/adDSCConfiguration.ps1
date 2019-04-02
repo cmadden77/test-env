@@ -389,7 +389,7 @@ configuration DCTest
             DependsOn = "[File]SrcFolder"
         }
 
-
+		<#
         for($instance=1; $instance -le $ADFSFarmCount; $instance++) {
 
 			Script "UpdateDNS$instance"
@@ -414,7 +414,7 @@ configuration DCTest
 					return ($Zone -ine $null)
 				}
 			}
-		}	
+		}	#>
     }
 }
 

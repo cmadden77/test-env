@@ -202,7 +202,8 @@
     "adfsDSCTemplate": "[concat(parameters('assetLocation'),'DSC/adfsDSC.zip')]",
     "adfsDSCConfigurationFunction": "adfsDSCConfiguration.ps1\\Main",
     "wapDSCConfigurationFunction": "wapDSCConfiguration.ps1\\Main",
-    "WAPPubIpDnsFQDN": "[concat(variables('publicIPAddressDNSName'),'{0}.', toLower(replace(resourceGroup().location,' ','')),'.cloudapp.azure.com')]"
+    "WAPPubIpDnsFQDN": "[concat(variables('publicIPAddressDNSName'),'{0}.', toLower(replace(resourceGroup().location,' ','')),'.cloudapp.azure.com')]",
+    "ADFSFarmName": "ngsts.vnagases.com"
   },
   "resources": [
     {
@@ -303,7 +304,7 @@
           "properties": [
             {
               "Name": "Subject",
-              "Value": "[variables('WAPPubIpDnsFQDN')]",
+              "Value": "[variables('ADFSFarmName')]",
               "TypeName": "System.String"
             },
             {
@@ -387,7 +388,7 @@
           "properties": [
             {
               "Name": "Subject",
-              "Value": "[variables('WAPPubIpDnsFQDN')]",
+              "Value": "[variables('ADFSFarmName')]",
               "TypeName": "System.String"
             },
             {
@@ -624,7 +625,7 @@
           "fileUris": [
             "[variables('DeployADFSFarmTemplateUri')]"
           ],
-          "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', variables('DeployADFSFarmTemplate'), ' -Acct ', parameters('adminUsername'), ' -PW ', parameters('adminPassword'), ' -WapFqdn ', variables('WAPPubIpDnsFQDN'))]"
+          "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', variables('DeployADFSFarmTemplate'), ' -Acct ', parameters('adminUsername'), ' -PW ', parameters('adminPassword'), ' -WapFqdn ', variables('ADFSFarmName'))]"
         }
       }
     },
@@ -680,7 +681,7 @@
           "fileUris": [
             "[variables('CopyCertToWAPTemplateUri')]"
           ],
-          "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', variables('CopyCertToWAPTemplate'), ' -DCFQDN ', concat(variables('adVMName'), '.', parameters('adDomainName')), ' -adminuser ', parameters('adminUsername'), ' -password ', parameters('adminPassword'), ' -instance ', copyIndex(1), ' -WapFqdn ', variables('WAPPubIpDnsFQDN'))]"
+          "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', variables('CopyCertToWAPTemplate'), ' -DCFQDN ', concat(variables('adVMName'), '.', parameters('adDomainName')), ' -adminuser ', parameters('adminUsername'), ' -password ', parameters('adminPassword'), ' -instance ', copyIndex(1), ' -WapFqdn ', variables('ADFSFarmName'))]"
         }
       }
     }
