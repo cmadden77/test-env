@@ -237,7 +237,7 @@ configuration InstallAndConfigureExchange
 		WindowsFeature NETWCFHTTPActivation45 {
 			Name = "NET-WCF-HTTP-Activation45"
             Ensure = "Present"
-			DependsOn = "[WindowsFeature]NETWCFHTTPActivation45"
+			DependsOn = "[WindowsFeature]WindowsIdentityFoundation"
 		}
 		# Install Exchange 2016 CU12
         xExchInstall InstallExchange
@@ -245,7 +245,7 @@ configuration InstallAndConfigureExchange
             Path = "$exchangeInstallerPath\setup.exe"
             Arguments = "/Mode:Install /Role:Mailbox /OrganizationName:ExchOrg /TargetDir:F:\Exchange /IAcceptExchangeServerLicenseTerms"
             Credential = $DomainCreds
-            DependsOn = "[WindowsFeature]WindowsIdentityFoundation"
+            DependsOn = "[WindowsFeature]NETWCFHTTPActivation45"
 			PsDscRunAsCredential = $DomainCreds
         }
 		# Reboot node if needed
