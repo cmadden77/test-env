@@ -113,25 +113,6 @@
   },
   "resources": [
     {
-      "name": "[concat(variables('adfsPubIpName'), copyIndex(1))]",
-      "type": "Microsoft.Network/publicIPAddresses",
-      "location": "[parameters('location')]",
-      "copy": {
-        "name": "adfsIpCopy",
-        "count": "[variables('adfsDeployCount')]"
-      },
-      "apiVersion": "[variables('apiVersion')]",
-      "tags": {
-        "displayName": "adfsPubIp"
-      },
-      "properties": {
-        "publicIPAllocationMethod": "Dynamic",
-        "dnsSettings": {
-          "domainNameLabel": "[tolower(concat(parameters('adfsVMName'), parameters('deploymentNumber'), '-', copyIndex(1)))]"
-        }
-      }
-    },
-    {
       "name": "[concat(variables('wapPubIpName'), copyIndex(1))]",
       "type": "Microsoft.Network/publicIPAddresses",
       "location": "[parameters('location')]",
@@ -161,7 +142,6 @@
       },
       "tags": { "displayName": "adfsNIC" },
       "dependsOn": [
-        "adfsIpCopy"
       ],
       "properties": {
         "ipConfigurations": [
@@ -170,9 +150,6 @@
             "properties": {
               "privateIPAllocationMethod": "Static",
               "privateIPAddress": "[concat(variables('adfsNetworkString'), add(copyIndex(),variables('adfsStartIpNodeAddress')))]",
-              "publicIPAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIPAddresses', concat(variables('adfsPubIpName'), copyIndex(1)))]"
-              },
               "subnet": {
                 "id": "[variables('adSubnetID')]"
               }
