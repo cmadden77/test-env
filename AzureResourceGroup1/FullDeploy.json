@@ -129,7 +129,7 @@
     "location": "[resourceGroup().location]",
     "companyNamePrefix": "[split(parameters('adDomainName'),'.')[0]]",
     "adfsVMName": "[toupper('TAZADFS00')]",
-    "adVMName": "[toupper('TAZAD0000')]",
+    "adVMName": "[toupper('TAZAD001')]",
     "adNSGName": "[concat('INT-AD', parameters('deploymentNumber'))]",
     "virtualNetworkName": "[concat('vNet-10-199-0-0_16-USE2')]",
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",

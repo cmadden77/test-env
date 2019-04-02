@@ -355,14 +355,14 @@ configuration DCTest
 	$adfsNetworkArr         = $ADFSIPAddress.Split('.')
 	$adfsStartIpNodeAddress = [int]$adfsNetworkArr[3]
 	$adfsNetworkString      = "$($adfsNetworkArr[0]).$($adfsNetworkArr[1]).$($adfsNetworkArr[2])."
-
+	<#
     $CertPw         = $AdminCreds.Password
     $ClearPw        = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($CertPw))
 
-    Import-DscResource -ModuleName xComputerManagement,xNetworking,xSmbShare
-
     [System.Management.Automation.PSCredential]$DomainCreds = New-Object System.Management.Automation.PSCredential ("${shortDomain}\$($Admincreds.UserName)", $Admincreds.Password)
-    
+    #>
+	Import-DscResource -ModuleName xComputerManagement,xNetworking,xSmbShare
+
     Node 'localhost'
     {
         LocalConfigurationManager
