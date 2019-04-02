@@ -297,21 +297,12 @@
               "Name": "ADFSIPAddress",
               "Value": "[parameters('adfsIP')]",
               "TypeName": "System.String"
-            },
-            {
-              "Name": "UserCreds",
-              "Value": {
-                "UserName": "user",
-                "Password": "PrivateSettingsRef:UserPassword"
-              },
-              "TypeName": "System.Management.Automation.PSCredential"
             }
           ]
         },
         "protectedSettings": {
           "Items": {
-            "AdminPassword": "[parameters('adminPassword')]",
-            "UserPassword": "[parameters('defaultUserPassword')]"
+            "AdminPassword": "[parameters('adminPassword')]"
           }
         }
       }
