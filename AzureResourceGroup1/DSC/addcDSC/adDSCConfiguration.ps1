@@ -342,14 +342,14 @@ configuration DCTest
         [Int]$RetryCount=20,
         [Int]$RetryIntervalSec=30
     )
-    
+    <#
     $wmiDomain      = Get-WmiObject Win32_NTDomain -Filter "DnsForestName = '$( (Get-WmiObject Win32_ComputerSystem).Domain)'"
     $shortDomain    = $wmiDomain.DomainName
     $DomainName     = $wmidomain.DnsForestName
     $ComputerName   = $wmiDomain.PSComputerName
     $CARootName     = "$($shortDomain.ToLower())-$($ComputerName.ToUpper())-CA"
     $CAServerFQDN   = "$ComputerName.$DomainName"
-
+	#>
 	# NOTE: see adfsDeploy.json variable block to see how the internal IP is constructed 
 	#       (punting and reproducing logic here)
 	$adfsNetworkArr         = $ADFSIPAddress.Split('.')
