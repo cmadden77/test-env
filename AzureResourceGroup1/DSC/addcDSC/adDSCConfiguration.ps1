@@ -19,7 +19,7 @@ configuration DCTest
         [Int]$RetryCount=20,
         [Int]$RetryIntervalSec=30
     )
-    <#
+  
     $wmiDomain      = Get-WmiObject Win32_NTDomain -Filter "DnsForestName = '$( (Get-WmiObject Win32_ComputerSystem).Domain)'"
     $shortDomain    = $wmiDomain.DomainName
     $DomainName     = $wmidomain.DnsForestName
@@ -32,7 +32,7 @@ configuration DCTest
 	$adfsNetworkArr         = $ADFSIPAddress.Split(".")
 	$adfsStartIpNodeAddress = [int]$adfsNetworkArr[3]
 	$adfsNetworkString      = "$($adfsNetworkArr[0]).$($adfsNetworkArr[1]).$($adfsNetworkArr[2])."
-
+  <#
     $CertPw         = $AdminCreds.Password
     $ClearPw        = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($CertPw))
 	
@@ -66,6 +66,29 @@ configuration DCTest
             ReadAccess = "Authenticated Users"
             DependsOn = "[File]SrcFolder"
         }
+
+					Script "UpdateDNS$instance"
+			{
+				SetScript  = {
+								$NodeAddr  = ([int]$($using:instance) + [int]$($using:adfsStartIpNodeAddress)) - 1
+								$IPAddress = "$($using:adfsNetworkString)$NodeAddr"
+
+								$s        = $using:subject;
+								$s        = $s -f $using:instance
+								$ZoneName = $s
+								$Zone     = Add-DnsServerPrimaryZone -Name $ZoneName -ReplicationScope Forest -PassThru
+								$rec      = Add-DnsServerResourceRecordA -ZoneName $ZoneName -Name "@" -AllowUpdateAny -IPv4Address $IPAddress
+							 }
+
+				GetScript =  { @{} }
+				TestScript = { 
+					$s        = $using:subject;
+					$s        = $s -f $using:instance
+					$ZoneName = $s
+					$Zone = Get-DnsServerZone -Name $ZoneName -ErrorAction SilentlyContinue
+					return ($Zone -ine $null)
+				}
+			}
     }
 }
 
@@ -373,9 +396,6 @@ configuration RootCA
         [Parameter(Mandatory)]
         [String]$ADFSIPAddress,
 
-		[Parameter(Mandatory)]
-		[System.Management.Automation.PSCredential]$UserCreds,
-
         [Int]$RetryCount=20,
         [Int]$RetryIntervalSec=30
     )
@@ -506,7 +526,7 @@ configuration RootCA
 				Credential                = $DomainCreds
 				DependsOn                 = "[xADCSWebEnrollment]CertSrv"
 			}
-			<#
+			
 			Script "SaveCert$instance"
 			{
 				SetScript  = {
@@ -529,7 +549,7 @@ configuration RootCA
 							 }
 				DependsOn  = "[xCertReq]SSLCert$instance"
 			}
-
+			<#
 			Script "UpdateDNS$instance"
 			{
 				SetScript  = {
