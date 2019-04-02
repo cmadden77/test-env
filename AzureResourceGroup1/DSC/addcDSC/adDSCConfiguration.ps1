@@ -40,6 +40,9 @@ configuration DCTest
 
     [System.Management.Automation.PSCredential]$DomainCreds = New-Object System.Management.Automation.PSCredential ("${shortDomain}\$($Admincreds.UserName)", $Admincreds.Password)
     #>
+
+	Import-DscResource -ModuleName xComputerManagement,xNetworking,xSmbShare,xCertificate
+
     Node "localhost"
     {
         LocalConfigurationManager

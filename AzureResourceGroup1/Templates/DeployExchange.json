@@ -340,8 +340,7 @@
         "protectedSettings": {
           "items": {
             "vmAdminPassword": "[variables('vmAdminPassword')]"
-          },
-          "DataBlobUri": "[variables('modulesUrlExchangeData')]"
+          }
         }
       }
     }
