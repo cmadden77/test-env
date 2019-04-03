@@ -3,6 +3,9 @@ Configuration Main
     Param 
     ( 
         [Parameter(Mandatory)]
+        [String]$PKIServer,
+
+        [Parameter(Mandatory)]
         [System.Management.Automation.PSCredential]$AdminCreds,
 
         [Int]$RetryCount=20,
@@ -11,6 +14,7 @@ Configuration Main
 
     $wmiDomain = Get-WmiObject Win32_NTDomain -Filter "DnsForestName = '$( (Get-WmiObject Win32_ComputerSystem).Domain)'"
     $shortDomain = $wmiDomain.DomainName
+	$pkiname = '\\'+$PKIServer
 
     Import-DscResource -ModuleName PSDesiredStateConfiguration
 
@@ -38,8 +42,7 @@ Configuration Main
 				#install the certificate(s) that will be used for ADFS Service
                 $cred=$using:DomainCreds
                 $wmiDomain = $using:wmiDomain
-                $DCName = $wmiDomain.DomainControllerName
-                $PathToCert="$DCName\src\*.pfx"
+                $PathToCert="$pkiname\src\*.pfx"
                 $CertFile = Get-ChildItem -Path $PathToCert
 				for ($file=0; $file -lt $CertFile.Count; $file++)
 				{
@@ -53,38 +56,12 @@ Configuration Main
 
             TestScript = { 
                 $wmiDomain = $using:wmiDomain
-                $DCName = $wmiDomain.DomainControllerName
-                $PathToCert="$DCName\src\*.pfx"
+                $PathToCert="$pkiname\src\*.pfx"
                 $File = Get-ChildItem -Path $PathToCert
                 $Subject=$File.BaseName
                 $cert = Get-ChildItem Cert:\LocalMachine\My | where {$_.Subject -eq "CN=$Subject"} -ErrorAction SilentlyContinue
                 return ($cert -ine $null)   #if not null (if we have the cert) return true
             }
-        }
-
-        Script InstallAADConnect
-        {
-            SetScript = {
-                $AADConnectDLUrl="https://download.microsoft.com/download/B/0/0/B00291D0-5A83-4DE7-86F5-980BC00DE05A/AzureADConnect.msi"
-                $exe="$env:SystemRoot\system32\msiexec.exe"
-
-                $tempfile = [System.IO.Path]::GetTempFileName()
-                $folder = [System.IO.Path]::GetDirectoryName($tempfile)
-
-                $webclient = New-Object System.Net.WebClient
-                $webclient.DownloadFile($AADConnectDLUrl, $tempfile)
-
-                Rename-Item -Path $tempfile -NewName "AzureADConnect.msi"
-                $MSIPath = $folder + "\AzureADConnect.msi"
-
-                Invoke-Expression "& `"$exe`" /i $MSIPath /qn /passive /forcerestart"
-            }
-
-            GetScript =  { @{} }
-            TestScript = { 
-                return Test-Path "$env:TEMP\AzureADConnect.msi" 
-            }
-            DependsOn  = '[Script]SaveCert','[WindowsFeature]installADFS'
         }
     }
 }

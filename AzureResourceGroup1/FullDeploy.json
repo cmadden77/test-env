@@ -123,6 +123,7 @@
     "ExchangeVMName": "[toupper('TAZEXCH00')]",
     "adcVMName": "[toupper('TAZADC00')]",
     "pkiVMName": "[toupper('TAZPKI00')]",
+    "pkiVMName1": "[toupper('TAZPKI001')]",
     "memberVMName": "[toupper('TAZMEMBER0')]",
     "ExchangeTemplateURI": "[concat(parameters('assetLocation'),'Templates/DeployExchange.json')]",
     "adfsTemplateURI": "[concat(parameters('assetLocation'),'Templates/adfsDeploy.json')]",
@@ -554,6 +555,11 @@
           "configurationFunction": "[variables('adfsDSCConfigurationFunction')]",
           "properties": [
             {
+              "Name": "PKIServer",
+              "Value": "[variables('pkiVMName1')]",
+              "TypeName": "System.String"
+            },
+            {
               "Name": "AdminCreds",
               "Value": {
                 "UserName": "[parameters('adminUsername')]",
@@ -650,7 +656,7 @@
           "fileUris": [
             "[variables('CopyCertToWAPTemplateUri')]"
           ],
-          "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', variables('CopyCertToWAPTemplate'), ' -DCFQDN ', concat(variables('adVMName'), '.', parameters('adDomainName')), ' -adminuser ', parameters('adminUsername'), ' -password ', parameters('adminPassword'), ' -instance ', copyIndex(1), ' -WapFqdn ', variables('ADFSFarmName'))]"
+          "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -File ', variables('CopyCertToWAPTemplate'), ' -PKIFQDN ', concat(variables('pkiVMName1'), '.', parameters('adDomainName')), ' -adminuser ', parameters('adminUsername'), ' -password ', parameters('adminPassword'), ' -instance ', copyIndex(1), ' -WapFqdn ', variables('ADFSFarmName'))]"
         }
       }
     }

@@ -1,6 +1,6 @@
 ﻿param (
     [Parameter(Mandatory)]
-    [string]$DCFQDN,
+    [string]$PKIFQDN,
 
     [Parameter(Mandatory)]
     [string]$adminuser,
@@ -16,7 +16,7 @@
 )
 
 $ErrorActionPreference = "Stop"
-$arr = $DCFQDN.split('.')
+$arr = $PKIFQDN.split('.')
 $DomainName = $arr[1]
 $SecPW=ConvertTo-SecureString $password -AsPlainText -Force
 $File=$null
@@ -29,8 +29,8 @@ md "c:\temp" -ErrorAction Ignore
 md "c:\AADLab" -ErrorAction Ignore
 
 if (!(Test-Path -Path "$($completeFile)0")) {
-    $PathToCert="\\$DCFQDN\src"
-    net use "\\$DCFQDN\src" $password /USER:$adminuser
+    $PathToCert="\\$PKIFQDN\src"
+    net use "\\$PKIFQDN\src" $password /USER:$adminuser
     Copy-Item -Path "$PathToCert\*.pfx" -Destination "c:\temp\" -Recurse -Force
     Copy-Item -Path "$PathToCert\*.cer" -Destination "c:\temp\" -Recurse -Force
     #record that we got this far
