@@ -229,6 +229,8 @@
           "location": { "value": "[variables('location')]" },
           "networkInterfaceName": { "value": "[variables('NetworkInterfaceName')]" },
           "virtualNetworkName": { "value": "[variables('virtualNetworkName')]" },
+          "adfsFarm": { "value": "[variables('ADFSFarmName')]" },
+          "adfsFarmIP": { "value": "[parameters('adfsIP')]" },
           "vmSize": { "value": "[parameters('vmSize')]" },
           "deploymentNumber": { "value": "[parameters('deploymentNumber')]" }
         }

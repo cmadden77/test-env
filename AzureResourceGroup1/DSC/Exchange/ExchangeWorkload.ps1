@@ -43,19 +43,11 @@ configuration InstallAndConfigureExchange
 
 	Node localhost
     {
-		#Disable realtime Monitoring to speed up installation of exchange
-	    WindowsDefender DisableRealtimeMonitoring
-        {
-			IsSingleInstance = 'yes'
-			DisableRealtimeMonitoring = $True
-        }   
-
 		xWaitforDisk Disk2
         {
             DiskNumber = $diskNumber
             RetryIntervalSec = 60
             RetryCount = 60
-			DependsOn = '[WindowsDefender]DisableRealtimeMonitoring'
         }
         xDisk Volume
         {
@@ -257,6 +249,13 @@ configuration InstallAndConfigureExchange
             DependsOn = "[WindowsFeature]NETWCFHTTPActivation45"
 			PsDscRunAsCredential = $DomainCreds
         }
+		#Enable realtime Monitoring to speed up installation of exchange
+	    WindowsDefender DisableRealtimeMonitoring
+        {
+			IsSingleInstance = 'yes'
+			DisableRealtimeMonitoring = $False
+        }   
+
 		# Reboot node if needed
 		LocalConfigurationManager 
         {

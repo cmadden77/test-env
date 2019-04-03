@@ -118,7 +118,10 @@ function DownloadInstallVcredist  {
 	}
 }
 
+#disable windows defender to speed up the process
+Set-MpPreference -DisableRealtimeMonitoring $true
 
+#download and install
 DownloadISO
 DownloadInstallUCMA4
 DownloadInstallVcredist 

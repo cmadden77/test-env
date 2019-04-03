@@ -1,5 +1,11 @@
 param (
     [Parameter(Mandatory)]
+    [string]$adfsfarmip,
+
+    [Parameter(Mandatory)]
+    [string]$adfsfarm,
+
+    [Parameter(Mandatory)]
     [string]$domain,
 
     [Parameter(Mandatory)]
@@ -115,3 +121,16 @@ if (!(Test-Path -Path "$($completeFile)$step")) {
     New-Item -ItemType file "$($completeFile)$step"
 }
 
+$step=5
+if (!(Test-Path -Path "$($completeFile)$step")) {
+
+	$dnszone = $adfsfarm.split('.')[1]+'.'+$adfsfarm.split('.')[2]
+	$arecord = $adfsfarm.split('.')[0]
+
+	Add-DnsServerPrimaryZone -Name $dnszone -ReplicationScope "Forest"
+	Add-DnsServerResourceRecordA -Name $arecord -ZoneName $dnszone -AllowUpdateAny -IPv4Address $adfsfarmip 
+
+    #record that we got this far
+    New-Item -ItemType file "$($completeFile)$step"
+
+}

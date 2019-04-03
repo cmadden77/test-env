@@ -350,8 +350,6 @@ configuration DCTest
     $CARootName     = "$($shortDomain.ToLower())-$($ComputerName.ToUpper())-CA"
     $CAServerFQDN   = "$ComputerName.$DomainName"
 
-	$dnszone = $Subject.split('.')[1]+'.'+$Subject.split('.')[2]
-	$arecord = $Subject.split('.')[0]
 
 	# NOTE: see adfsDeploy.json variable block to see how the internal IP is constructed 
 	#       (punting and reproducing logic here)
@@ -364,17 +362,10 @@ configuration DCTest
 	#>
     [System.Management.Automation.PSCredential]$DomainCreds = New-Object System.Management.Automation.PSCredential ("${shortDomain}\$($Admincreds.UserName)", $Admincreds.Password)
     
-	Import-DscResource -ModuleName xComputerManagement,xNetworking,xSmbShare,xDnsServer,WindowsDefender
+	Import-DscResource -ModuleName xComputerManagement,xNetworking,xSmbShare
 
     Node 'localhost'
-    {
-		#Disable realtime Monitoring to speed up installation of exchange
-	    WindowsDefender DisableRealtimeMonitoring
-        {
-			IsSingleInstance = 'yes'
-			DisableRealtimeMonitoring = $True
-        }   
-     
+    {     
         File SrcFolder
         {
             DestinationPath = "C:\src"
@@ -390,28 +381,7 @@ configuration DCTest
             FullAccess = @("Domain Admins","Domain Computers")
             ReadAccess = "Authenticated Users"
             DependsOn = "[File]SrcFolder"
-        }
-   
-        xDnsServerADZone addadfsfarm
-        {
-            Name = $dnszone 
-            DynamicUpdate = 'Secure'
-            ReplicationScope = 'Domain'
-            Ensure = 'Present'
-            DependsOn = "[xSmbShare]SrcShare"
-        }
-
-        xDnsRecord adfsrecord
-        {
-            Name = $arecord
-            Target = $ADFSIPAddress
-            Zone = $dnszone
-            Type = "ARecord"
-            Ensure = "Present"
-            DependsOn = "[xDnsServerADZone]addadfsfarm"
-        }
-
-		
+        }		
     }
 }
 
