@@ -391,7 +391,6 @@ configuration DCTest
             Name = $dnszone 
             DynamicUpdate = 'Secure'
             ReplicationScope = 'Domain'
-            Credential = $DomainCreds
             Ensure = 'Present'
             DependsOn = "[xSmbShare]SrcShare"
         }

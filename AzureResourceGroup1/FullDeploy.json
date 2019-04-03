@@ -538,7 +538,7 @@
       },
       "dependsOn": [
         "adfsVMs",
-        "[concat('Microsoft.Compute/virtualMachines/', variables('adVMName'),'/extensions/Microsoft.Powershell.DSC')]"
+        "[concat('Microsoft.Compute/virtualMachines/', variables('pkiVMName'), '1','/extensions/Microsoft.Powershell.DSC')]"
       ],
       "tags": {
         "displayName": "adfsDSC"
