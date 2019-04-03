@@ -381,7 +381,33 @@ configuration DCTest
             FullAccess = @("Domain Admins","Domain Computers")
             ReadAccess = "Authenticated Users"
             DependsOn = "[File]SrcFolder"
-        }		
+        }
+		
+        for($instance=1; $instance -le $ADFSFarmCount; $instance++) {
+
+			Script "UpdateDNS$instance"
+			{
+				SetScript  = {
+								$NodeAddr  = ([int]$($using:instance) + [int]$($using:adfsStartIpNodeAddress)) - 1
+								$IPAddress = "$($using:adfsNetworkString)$NodeAddr"
+
+								$s        = $using:subject;
+								$s        = $s -f $using:instance
+								$ZoneName = $s
+								$Zone     = Add-DnsServerPrimaryZone -Name $ZoneName -ReplicationScope Forest -PassThru
+								$rec      = Add-DnsServerResourceRecordA -ZoneName $ZoneName -Name "@" -AllowUpdateAny -IPv4Address $IPAddress
+							 }
+
+				GetScript =  { @{} }
+				TestScript = { 
+					$s        = $using:subject;
+					$s        = $s -f $using:instance
+					$ZoneName = $s
+					$Zone = Get-DnsServerZone -Name $ZoneName -ErrorAction SilentlyContinue
+					return ($Zone -ine $null)
+				}
+			}
+		}
     }
 }
 

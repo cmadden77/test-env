@@ -120,7 +120,7 @@ if (!(Test-Path -Path "$($completeFile)$step")) {
     #record that we got this far
     New-Item -ItemType file "$($completeFile)$step"
 }
-
+<#
 $step=5
 if (!(Test-Path -Path "$($completeFile)$step")) {
 
@@ -134,3 +134,4 @@ if (!(Test-Path -Path "$($completeFile)$step")) {
     New-Item -ItemType file "$($completeFile)$step"
 
 }
+#>
