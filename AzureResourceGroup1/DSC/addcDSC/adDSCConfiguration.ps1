@@ -350,6 +350,9 @@ configuration DCTest
     $CARootName     = "$($shortDomain.ToLower())-$($ComputerName.ToUpper())-CA"
     $CAServerFQDN   = "$ComputerName.$DomainName"
 
+	$dnszone = $Subject.split('.')[1]+'.'+$Subject.split('.')[2]
+	$arecord = $Subject.split('.')[0]
+
 	# NOTE: see adfsDeploy.json variable block to see how the internal IP is constructed 
 	#       (punting and reproducing logic here)
 	$adfsNetworkArr         = $ADFSIPAddress.Split('.')
@@ -385,10 +388,9 @@ configuration DCTest
    
         xDnsServerADZone addadfsfarm
         {
-            Name = $Subject
+            Name = $dnszone 
             DynamicUpdate = 'Secure'
-            ReplicationScope = 'Forest'
-            ComputerName = $CAServerFQDN 
+            ReplicationScope = 'Domain'
             Credential = $DomainCreds
             Ensure = 'Present'
             DependsOn = "[xSmbShare]SrcShare"
@@ -396,9 +398,9 @@ configuration DCTest
 
         xDnsRecord adfsrecord
         {
-            Name = ""
+            Name = $arecord
             Target = $ADFSIPAddress
-            Zone = $Subject
+            Zone = $dnszone
             Type = "ARecord"
             Ensure = "Present"
             DependsOn = "[xDnsServerADZone]addadfsfarm"
