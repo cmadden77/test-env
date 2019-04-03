@@ -41,7 +41,7 @@ Configuration Main
             SetScript  = {
 				#install the certificate(s) that will be used for ADFS Service
                 $cred=$using:DomainCreds
-                $wmiDomain = $using:wmiDomain
+                $pkiname = $using:pkiname
                 $PathToCert="$pkiname\src\*.pfx"
                 $CertFile = Get-ChildItem -Path $PathToCert
 				for ($file=0; $file -lt $CertFile.Count; $file++)
@@ -55,7 +55,7 @@ Configuration Main
             GetScript =  { @{} }
 
             TestScript = { 
-                $wmiDomain = $using:wmiDomain
+                $pkiname = $using:pkiname
                 $PathToCert="$pkiname\src\*.pfx"
                 $File = Get-ChildItem -Path $PathToCert
                 $Subject=$File.BaseName

@@ -257,13 +257,6 @@ configuration InstallAndConfigureExchange
             DependsOn = "[WindowsFeature]NETWCFHTTPActivation45"
 			PsDscRunAsCredential = $DomainCreds
         }
-		#enable realtime Monitoring
-	    WindowsDefender EnableRealtimeMonitoring
-        {
-			IsSingleInstance = 'yes'
-			DisableRealtimeMonitoring = $False
-            DependsOn = "[xExchInstall]InstallExchange"
-        }   
 		# Reboot node if needed
 		LocalConfigurationManager 
         {

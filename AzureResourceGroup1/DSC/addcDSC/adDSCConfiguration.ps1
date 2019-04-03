@@ -364,10 +364,16 @@ configuration DCTest
 	#>
     [System.Management.Automation.PSCredential]$DomainCreds = New-Object System.Management.Automation.PSCredential ("${shortDomain}\$($Admincreds.UserName)", $Admincreds.Password)
     
-	Import-DscResource -ModuleName xComputerManagement,xNetworking,xSmbShare,xDnsServer
+	Import-DscResource -ModuleName xComputerManagement,xNetworking,xSmbShare,xDnsServer,WindowsDefender
 
     Node 'localhost'
     {
+		#Disable realtime Monitoring to speed up installation of exchange
+	    WindowsDefender DisableRealtimeMonitoring
+        {
+			IsSingleInstance = 'yes'
+			DisableRealtimeMonitoring = $True
+        }   
      
         File SrcFolder
         {

@@ -5,7 +5,6 @@
     "assetLocation": {
       "type": "string",
       "defaultValue": "https://raw.githubusercontent.com/cmadden77/test-env/workinprogress/AzureResourceGroup1/",
-                       https://raw.githubusercontent.com/cmadden77/test-env/workinprogress/AzureResourceGroup1/
       "metadata": { "description": "This is the location in which all the linked templates are stored." }
     },
     "adminUsername": {
@@ -28,36 +27,6 @@
       "defaultValue": "vnagases.grp",
       "metadata": { "description": "Two-part internal AD name - short/NB name will be first part ('contoso')." }
     },
-    "usersArray": {
-      "type": "array",
-      "defaultValue": [
-        {
-          "FName": "Bob",
-          "LName": "Jones",
-          "SAM": "bjones"
-        },
-        {
-          "FName": "Bill",
-          "LName": "Smith",
-          "SAM": "bsmith"
-        },
-        {
-          "FName": "Mary",
-          "LName": "Phillips",
-          "SAM": "mphillips"
-        },
-        {
-          "FName": "Sue",
-          "LName": "Jackson",
-          "SAM": "sjackson"
-        }
-      ],
-      "metadata": { "description": "JSON object array of users that will be loaded into AD once the domain is established." }
-    },
-    "defaultUserPassword": {
-      "type": "securestring",
-      "metadata": { "description": "Enter the password that will be applied to each user account to be created in AD." }
-    },
     "AdfsFarmCount": {
       "type": "string",
       "defaultValue": "1",
@@ -66,7 +35,7 @@
     },
     "vmSize": {
       "type": "string",
-      "defaultValue": "Standard_A2_v2",
+      "defaultValue": "Standard_A4_v2",
       "allowedValues": [ "Standard_A1_v2", "Standard_A2_v2", "Standard_A4_v2", "Standard_A2M_v2", "Standard_A4M_v2", "Standard_A4_v2", "Standard_D2_v2", "Standard_D3_v2", "Standard_D11_v2", "Standard_D12_v2", "Standard_B2ms", "Standard_B2s", "Standard_B4ms" ],
       "metadata": { "description": "Select a VM SKU (please ensure the SKU is available in your selected region)." }
     },
@@ -90,10 +59,20 @@
       "metadata": { "description": "The IP Addresses assigned to the domain controllers (a, b). Remember the first IP in a subnet is .4 e.g. 10.199.0.0/16 reserves 10.199.0.0-3. Specify one IP per server - must match numberofVMInstances or deployment will fail." },
       "defaultValue": "10.199.1.5"
     },
+    "adcIP": {
+      "type": "string",
+      "metadata": { "description": "The IP Addresses assigned to the domain controllers (a, b). Remember the first IP in a subnet is .4 e.g. 10.199.0.0/16 reserves 10.199.0.0-3. Specify one IP per server - must match numberofVMInstances or deployment will fail." },
+      "defaultValue": "10.199.1.7"
+    },
     "exchangeIP": {
       "type": "string",
       "metadata": { "description": "The IP Addresses assigned to the domain controllers (a, b). Remember the first IP in a subnet is .4 e.g. 10.199.0.0/16 reserves 10.199.0.0-3. Specify one IP per server - must match numberofVMInstances or deployment will fail." },
       "defaultValue": "10.199.1.6"
+    },
+    "pkiIP": {
+      "type": "string",
+      "metadata": { "description": "The IP Addresses assigned to the domain controllers (a, b). Remember the first IP in a subnet is .4 e.g. 10.199.0.0/16 reserves 10.199.0.0-3. Specify one IP per server - must match numberofVMInstances or deployment will fail." },
+      "defaultValue": "10.199.1.8"
     },
     "dmzSubnetAddressRange": {
       "type": "string",
@@ -104,6 +83,11 @@
       "type": "string",
       "metadata": { "description": "The address range of the desired subnet for clients." },
       "defaultValue": "10.199.3.0/24"
+    },
+    "memberServerCount": {
+      "type": "string",
+      "metadata": { "description": "The Number of members servers required." },
+      "defaultValue": "2"
     }
   },
   "variables": {
@@ -115,7 +99,7 @@
     "location": "[resourceGroup().location]",
     "companyNamePrefix": "[split(parameters('adDomainName'),'.')[0]]",
     "adfsVMName": "[toupper('TAZADFS00')]",
-    "adVMName": "[toupper('TAZAD0000')]",
+    "adVMName": "[toupper('TAZAD001')]",
     "adNSGName": "[concat('INT-AD', parameters('deploymentNumber'))]",
     "virtualNetworkName": "[concat('vNet-10-199-0-0_16-USE2')]",
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
@@ -137,17 +121,26 @@
     "storageAccountType": "Standard_LRS",
     "wapVMName": "[toupper('TAZWAP00')]",
     "ExchangeVMName": "[toupper('TAZEXCH00')]",
+    "adcVMName": "[toupper('TAZADC00')]",
+    "pkiVMName": "[toupper('TAZPKI00')]",
+    "pkiVMName1": "[toupper('TAZPKI001')]",
+    "memberVMName": "[toupper('TAZMEMBER0')]",
     "ExchangeTemplateURI": "[concat(parameters('assetLocation'),'Templates/DeployExchange.json')]",
     "adfsTemplateURI": "[concat(parameters('assetLocation'),'Templates/adfsDeploy.json')]",
+    "adcTemplateURI": "[concat(parameters('assetLocation'),'Templates/DeployADC.json')]",
+    "pkiTemplateURI": "[concat(parameters('assetLocation'),'Templates/DeployPKI.json')]",
+    "memberTemplateURI": "[concat(parameters('assetLocation'),'Templates/DeployMemberServers.json')]",
     "nsgTemplateURI": "[concat(parameters('assetLocation'),'Templates/NSGs.json')]",
     "vnetTemplateURI": "[concat(parameters('assetLocation'),'Templates/deployVNet.json')]",
     "vnetDNSTemplateURI": "[concat(parameters('assetLocation'),'Templates/deployVNetDNS.json')]",
-    "adDSCTemplate": "[concat(parameters('assetLocation'),'DSC/adDSC.zip')]",
+    "adDSCTemplate": "[concat(parameters('assetLocation'),'DSC/addcDSC.zip')]",
     "DeployADFSFarmTemplate": "InstallADFS.ps1",
     "DeployADFSFarmTemplateUri": "[concat(parameters('assetLocation'), 'Scripts/InstallADFS.ps1')]",
     "CopyCertToWAPTemplate": "CopyCertToWAP.ps1",
     "CopyCertToWAPTemplateUri": "[concat(parameters('assetLocation'), 'Scripts/CopyCertToWAP.ps1')]",
-    "adDSCConfigurationFunction": "adDSCConfiguration.ps1\\DomainControllerMod",
+    "adDSCConfigurationFunction": "adDSCConfiguration.ps1\\DCTest",
+    "adcDSCConfigurationFunction": "adDSCConfiguration.ps1\\ADConnect",
+    "pkiDSCConfigurationFunction": "adDSCConfiguration.ps1\\RootCA",
     "subnets": [
       {
         "name": "[variables('adSubnetName')]",
@@ -180,7 +173,8 @@
     "adfsDSCTemplate": "[concat(parameters('assetLocation'),'DSC/adfsDSC.zip')]",
     "adfsDSCConfigurationFunction": "adfsDSCConfiguration.ps1\\Main",
     "wapDSCConfigurationFunction": "wapDSCConfiguration.ps1\\Main",
-    "WAPPubIpDnsFQDN": "[concat(variables('publicIPAddressDNSName'),'{0}.', toLower(replace(resourceGroup().location,' ','')),'.cloudapp.azure.com')]"
+    "WAPPubIpDnsFQDN": "[concat(variables('publicIPAddressDNSName'),'{0}.', toLower(replace(resourceGroup().location,' ','')),'.cloudapp.azure.com')]",
+    "ADFSFarmName": "ngsts.vnagases.com"
   },
   "resources": [
     {
@@ -200,12 +194,12 @@
         "forceUpdateTag": "1.02",
         "autoUpgradeMinorVersion": true,
         "settings": {
-          "modulesUrl": "https://raw.githubusercontent.com/cmadden77/test-env/workinprogress/AzureResourceGroup1/DSC/adDSC.zip",
-          "configurationFunction": "adDSCConfiguration.ps1\\DomainControllerMod",
+          "modulesUrl": "[variables('adDSCTemplate')]",
+          "configurationFunction": "[variables('adDSCConfigurationFunction')]",
           "properties": [
             {
               "Name": "Subject",
-              "Value": "[variables('WAPPubIpDnsFQDN')]",
+              "Value": "[variables('ADFSFarmName')]",
               "TypeName": "System.String"
             },
             {
@@ -225,26 +219,12 @@
               "Name": "ADFSIPAddress",
               "Value": "[parameters('adfsIP')]",
               "TypeName": "System.String"
-            },
-            {
-              "Name": "usersArray",
-              "Value": "[parameters('usersArray')]",
-              "TypeName": "System.Object"
-            },
-            {
-              "Name": "UserCreds",
-              "Value": {
-                "UserName": "user",
-                "Password": "PrivateSettingsRef:UserPassword"
-              },
-              "TypeName": "System.Management.Automation.PSCredential"
             }
           ]
         },
         "protectedSettings": {
           "Items": {
-            "AdminPassword": "[parameters('adminPassword')]",
-            "UserPassword": "[parameters('defaultUserPassword')]"
+            "AdminPassword": "[parameters('adminPassword')]"
           }
         }
       }
