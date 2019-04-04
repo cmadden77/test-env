@@ -238,7 +238,8 @@
           "GatewaySubnetAddressRange": { "value": "[parameters('GatewaySubnetAddressRange')]" },
           "gatewayPublicIPName": { "value": "[variables('gatewayPublicIPName')]" },
           "gatewayName": { "value": "[variables('gatewayName')]" },
-          "vpnClientAddressPoolPrefix": { "value": "[parameters('vpnClientAddressPool')]" }
+          "vpnClientAddressPoolPrefix": { "value": "[parameters('vpnClientAddressPool')]" },
+          "virtualNetworkAddressRange": { "value": "[parameters('virtualNetworkAddressRange')]" }
         }
       }
     },
