@@ -8,7 +8,14 @@
       "metadata": { "description": "The address range of the new VNET in CIDR format" },
       "defaultValue": "10.199.0.0/16"
     },
-    "subnets": { "type": "array" }
+    "subnets": { "type": "array" },
+    "gatewayPublicIPName": {
+      "type": "string",
+      "defaultValue": "VNetPIP",
+      "metadata": {
+        "description": "The name of the PublicIP attached to the VirtualNetworkGateway."
+      }
+    }
   },
   "variables": {
     "location": "[resourceGroup().location]"
@@ -28,7 +35,16 @@
         },
         "subnets": "[parameters('subnets')]"
       }
-    }
+    },
+    {
+      "apiVersion": "2018-04-01",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "[parameters('gatewayPublicIPName')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "publicIPAllocationMethod": "Dynamic"
+      }
+    }    
   ],
   "outputs": {
     "VNet": {

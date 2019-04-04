@@ -181,6 +181,12 @@
             "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('CLINSGName'))]"
           }
         }
+      },
+      {
+        "name": "GatewaySubnet",
+        "properties": {
+          "addressprefix": "[parameters('GatewaySubnetAddressRange')]"
+        }
       }
     ],
     "adfsDSCTemplate": "[concat(parameters('assetLocation'),'DSC/adfsDSC.zip')]",
@@ -203,6 +209,11 @@
         "parameters": {
           "virtualNetworkName": { "value": "[variables('virtualNetworkName')]" },
           "subnets": { "value": "[ variables('subnets') ]" },
+          "deploymentNumber": { "value": "[parameters('deploymentNumber')]" },
+          "GatewaySubnetAddressRange": { "value": "[parameters('GatewaySubnetAddressRange')]" },
+          "gatewayPublicIPName": { "value": "[variables('gatewayPublicIPName')]" },
+          "gatewayName": { "value": "[variables('gatewayName')]" },
+          "vpnClientAddressPoolPrefix": { "value": "[parameters('vpnClientAddressPool')]" },
           "virtualNetworkAddressRange": { "value": "[parameters('virtualNetworkAddressRange')]" }
         }
       }
