@@ -14,7 +14,7 @@
       "metadata": { "description": "When deploying the stack N times, define the instance - this will be appended to some resource names to avoid collisions." }
     },
     "subnets": {
-      "type": "string",
+      "type": "array",
       "defaultValue": "[concat('adSubnet', parameters('deploymentNumber'))]"
     },
     "GatewaySubnetAddressRange": {
