@@ -49,6 +49,11 @@
       "metadata": { "description": "The address range of the desired subnet for Active Directory." },
       "defaultValue": "10.199.1.0/24"
     },
+    "GatewaySubnetAddressRange": {
+      "type": "string",
+      "metadata": { "description": "The address range of the desired subnet for the gateway (VPN)." },
+      "defaultValue": "10.199.0.0/24"
+    },
     "adIP": {
       "type": "string",
       "metadata": { "description": "The IP Addresses assigned to the domain controllers (a, b). Remember the first IP in a subnet is .4 e.g. 10.199.0.0/16 reserves 10.199.0.0-3. Specify one IP per server - must match numberofVMInstances or deployment will fail." },
@@ -84,6 +89,11 @@
       "metadata": { "description": "The address range of the desired subnet for clients." },
       "defaultValue": "10.199.3.0/24"
     },
+    "vpnClientAddressPool": {
+      "type": "string",
+      "metadata": { "description": "The address range of the vpn'd users." },
+      "defaultValue": "192.168.254.0/24"
+    },
     "memberServerCount": {
       "type": "string",
       "metadata": { "description": "The Number of members servers required." },
@@ -113,6 +123,8 @@
     "cliNSGName": "[concat('INT-CLI', parameters('deploymentNumber'))]",
     "cliSubnetID": "[concat(variables('vnetID'),'/subnets/',variables('cliSubnetName'))]",
     "cliSubnetName": "[concat('sNet-10-199-3-0_24-CLI')]",
+    "gatewayPublicIPName": "VNetPIP",
+    "gatewayName": "vNetGateway",
     "imageOffer": "WindowsServer",
     "imagePublisher": "MicrosoftWindowsServer",
     "imageSKU": "2012-R2-Datacenter",
@@ -131,6 +143,7 @@
     "pkiTemplateURI": "[concat(parameters('assetLocation'),'Templates/DeployPKI.json')]",
     "memberTemplateURI": "[concat(parameters('assetLocation'),'Templates/DeployMemberServers.json')]",
     "nsgTemplateURI": "[concat(parameters('assetLocation'),'Templates/NSGs.json')]",
+    "vpnTemplateURI": "[concat(parameters('assetLocation'),'Templates/DeployVPN.json')]",
     "vnetTemplateURI": "[concat(parameters('assetLocation'),'Templates/deployVNet.json')]",
     "vnetDNSTemplateURI": "[concat(parameters('assetLocation'),'Templates/deployVNetDNS.json')]",
     "adDSCTemplate": "[concat(parameters('assetLocation'),'DSC/addcDSC.zip')]",
@@ -205,6 +218,27 @@
           "virtualNetworkName": { "value": "[variables('virtualNetworkName')]" },
           "subnets": { "value": "[ variables('subnets') ]" },
           "deploymentNumber": { "value": "[parameters('deploymentNumber')]" }
+        }
+      }
+    },
+    {
+      "name": "P2S-VPN",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2015-01-01",
+      "dependsOn": [
+        "Microsoft.Resources/Deployments/virtualNetwork"
+      ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": { "uri": "[variables('nsgTemplateURI')]" },
+        "parameters": {
+          "virtualNetworkName": { "value": "[variables('virtualNetworkName')]" },
+          "subnets": { "value": "[ variables('subnets') ]" },
+          "deploymentNumber": { "value": "[parameters('deploymentNumber')]" },
+          "gatewaySubnetPrefix": { "value": "[parameters('GatewaySubnetAddressRange')]" },
+          "gatewayPublicIPName": { "value": "[variables('gatewayPublicIPName')]" },
+          "gatewayName": { "value": "[variables('gatewayName')]" },
+          "vpnClientAddressPoolPrefix": { "value": "[parameters('vpnClientAddressPool')]" }
         }
       }
     },
