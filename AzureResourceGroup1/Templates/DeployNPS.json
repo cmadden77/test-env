@@ -1,0 +1,200 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "adSubnetName": {
+      "type": "string",
+      "defaultValue": "adSubnet"
+    },
+    "npsVMName": {
+      "type": "string",
+      "defaultValue": "TAZNPS"
+    },
+    "npsIP": {
+      "type": "string",
+      "metadata": { "description": "The IP Addresses assigned to the domain controllers (a, b). Remember the first IP in a subnet is .4 e.g. 10.0.0.0/16 reserves 10.0.0.0-3. Specify one IP per server - must match numberofVMInstances or deployment will fail.s" },
+      "defaultValue": "10.199.1.8"
+    },
+    "adDomainName": {
+      "type": "string",
+      "defaultValue": "contoso.com"
+    },
+    "adminPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Admin password"
+      }
+    },
+    "adminUsername": {
+      "type": "string",
+      "metadata": {
+        "description": "Admin username"
+      }
+    },
+    "deploymentNumber": {
+      "type": "string",
+      "defaultValue": "1",
+      "metadata": {
+        "description": "When deploying the stack N times, define the instance - this will be appended to some resource names to avoid collisions."
+      }
+    },
+    "assetLocation": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "Description": "The region to deploy the resources into"
+      }
+    },
+    "NetworkInterfaceName": {
+      "type": "string",
+      "defaultValue": "NIC",
+      "metadata": {
+        "description": "This is the prefix name of the Network interfaces"
+      }
+    },
+    "virtualNetworkName": {
+      "type": "string",
+      "defaultValue": "vnet"
+    },
+    "vmSize": {
+      "type": "string",
+      "defaultValue": "Standard_D1_v2",
+      "metadata": {
+        "description": "This is the allowed list of VM sizes"
+      }
+    },
+    "npsFarmCount": {
+      "type": "string",
+      "defaultValue": "1",
+      "allowedValues": [ "1", "2", "3", "4", "5" ],
+      "metadata": { "description": "An NPS Server this number of times. NOTE: it's unlikely to ever need more than one - additional farm counts are for edge case testing." }
+    }
+  },
+  "variables": {
+    "npsDeployCount": "[int(parameters('npsFarmCount'))]",
+    "shortDomainName": "[split(parameters('adDomainName'),'.')[0]]",
+    "npsNetworkArr": "[split(parameters('npsIP'),'.')]",
+    "npsStartIpNodeAddress": "[int(variables('npsNetworkArr')[3])]",
+    "npsNetworkString": "[concat(variables('npsNetworkArr')[0],'.',variables('npsNetworkArr')[1],'.',variables('npsNetworkArr')[2],'.')]",
+    "npsNICName": "[concat('nps-',parameters('NetworkInterfaceName'),parameters('deploymentNumber'))]",
+    "adSubnetID": "[concat(variables('vnetID'),'/subnets/',parameters('adSubnetName'))]",
+    "apiVersion": "2015-06-15",
+    "computeApiVersion": "2016-04-30-preview",
+    "domainJoinOptions": "3",
+    "imageOffer": "WindowsServer",
+    "imagePublisher": "MicrosoftWindowsServer",
+    "imageSKU": "2012-R2-Datacenter",
+    "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]"
+  },
+  "resources": [
+    {
+      "apiVersion": "[variables('apiVersion')]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[concat(variables('npsNICName'), copyIndex(1))]",
+      "location": "[parameters('location')]",
+      "copy": {
+        "name": "npsNicCopy",
+        "count": "[variables('npsDeployCount')]"
+      },
+      "tags": { "displayName": "npsNIC" },
+      "dependsOn": [
+      ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "[concat('adfsipconfig', parameters('deploymentNumber'), copyIndex(1))]",
+            "properties": {
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "[concat(variables('npsNetworkString'), add(copyIndex(),variables('npsStartIpNodeAddress')))]",
+              "subnet": {
+                "id": "[variables('adSubnetID')]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "[variables('computeApiVersion')]",
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[concat(parameters('npsVMName'), copyIndex(1))]",
+      "location": "[parameters('location')]",
+      "copy": {
+        "name": "npsVmCopy",
+        "count": "[variables('npsDeployCount')]"
+      },
+      "tags": { "displayName": "npsVM" },
+      "dependsOn": [
+        "npsNicCopy"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[parameters('vmSize')]"
+        },
+        "osProfile": {
+          "computerName": "[concat(parameters('npsVMName'), copyIndex(1))]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[variables('imagePublisher')]",
+            "offer": "[variables('imageOffer')]",
+            "sku": "[variables('imageSKU')]",
+            "version": "latest"
+          },
+          "osDisk": {
+            "caching": "ReadWrite",
+            "createOption": "FromImage"
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceid('Microsoft.Network/networkInterfaces', concat(variables('npsNICName'), copyIndex(1)))]"
+            }
+          ]
+        }
+      },
+      "resources": [
+      ]
+    },
+    {
+      "apiVersion": "[variables('apiVersion')]",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(parameters('npsVMName'), copyIndex(1), '/joindomain')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "npsVmCopy"
+      ],
+      "tags": {
+        "displayName": "npsVMJoin",
+        "isClient": "true"
+      },
+      "copy": {
+        "name": "joinCopy",
+        "count": "[variables('npsDeployCount')]"
+      },
+      "properties": {
+        "publisher": "Microsoft.Compute",
+        "type": "JsonADDomainExtension",
+        "typeHandlerVersion": "1.3",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "Name": "[parameters('adDomainName')]",
+          "OUPath": "",
+          "User": "[concat(variables('shortDomainName'), '\\', parameters('adminUsername'))]",
+          "Restart": "true",
+          "Options": "[variables('domainJoinOptions')]"
+        },
+        "protectedsettings": {
+          "Password": "[parameters('adminPassword')]"
+        }
+      }
+    }
+  ],
+  "outputs": {
+  }
+}
