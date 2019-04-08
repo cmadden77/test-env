@@ -4,7 +4,7 @@
   "parameters": {
     "assetLocation": {
       "type": "string",
-      "defaultValue": "https://pssaaccount1.blob.core.windows.net/deployment/",
+      "defaultValue": "https://raw.githubusercontent.com/cmadden77/test-env/master/AzureResourceGroup1/",
       "metadata": { "description": "This is the location in which all the linked templates are stored." }
     },
     "SASKey": {
@@ -615,6 +615,7 @@
           "adminPassword": { "value": "[parameters('adminPassword')]" },
           "adminUsername": { "value": "[parameters('adminUsername')]" },
           "assetlocation": { "value": "[parameters('assetLocation')]" },
+          "SASKey": { "value": "[parameters('SASKey')]" },
           "dmzSubnetName": { "value": "[variables('dmzSubnetName')]" },
           "location": { "value": "[variables('location')]" },
           "networkInterfaceName": { "value": "[variables('NetworkInterfaceName')]" },
