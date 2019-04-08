@@ -649,7 +649,8 @@
           "virtualNetworkName": { "value": "[variables('virtualNetworkName')]" },
           "vmSize": { "value": "[parameters('vmSize')]" },
           "deploymentNumber": { "value": "[parameters('deploymentNumber')]" },
-          "memberServerCount": { "value": "[parameters('memberServerCount')]" }
+          "memberServerCount": { "value": "[parameters('memberServerCount')]" },
+          "virtualNetworkAddressRange": { "value": "[parameters('virtualNetworkAddressRange')]" }
         }
       }
     },

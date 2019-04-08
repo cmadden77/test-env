@@ -60,6 +60,13 @@
         "description": "This is the allowed list of VM sizes"
       }
     },
+    "virtualNetworkAddressRange": {
+      "type": "string",
+      "defaultValue": "10.80.0.0",
+      "metadata": {
+        "description": "This is the allowed list of VM sizes"
+      }
+    },
     "memberServerCount": {
       "type": "string",
       "defaultValue": "2",
@@ -72,10 +79,11 @@
     "shortDomainName": "[split(parameters('adDomainName'),'.')[0]]",
     "NICName": "[concat('mem-',parameters('NetworkInterfaceName'),parameters('deploymentNumber'))]",
     "adSubnetID": "[concat(variables('vnetID'),'/subnets/',parameters('adSubnetName'))]",
-    "memberstartip": "10.199.1.20",
+    "VNetNetworkArr": "[split(parameters('virtualNetworkAddressRange'),'.')]",
+    "memberNetworkString": "[concat(variables('VNetNetworkArr')[0],'.',variables('VNetNetworkArr')[1],'.',variables('VNetNetworkArr')[2],'.')]",
+    "memberstartip": "10.80.1.20",
     "memberNetworkArr": "[split(variables('memberstartip'),'.')]",
     "memberstartIpNodeAddress": "[int(variables('memberNetworkArr')[3])]",
-    "memberNetworkString": "[concat(variables('memberNetworkArr')[0],'.',variables('memberNetworkArr')[1],'.',variables('memberNetworkArr')[2],'.')]",
     "apiVersion": "2015-06-15",
     "computeApiVersion": "2016-04-30-preview",
     "domainJoinOptions": "3",
