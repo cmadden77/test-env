@@ -183,6 +183,11 @@
         "name": "vmLoop",
         "count": "[variables('exchangeVMCount')]"
       },
+      "tags": {
+        "Application": "ExchangeHybrid",
+        "Department": "Core Infrastructure Test",
+        "Startup": "Tier2"
+      },
       "dependsOn": [
         "[concat('Microsoft.Storage/storageAccounts/',variables('uniqueStorageAccountName'))]",
         "[concat('Microsoft.Network/networkInterfaces/',variables('vmNicName'),copyindex(1))]"

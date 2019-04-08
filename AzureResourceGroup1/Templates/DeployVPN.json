@@ -72,6 +72,11 @@
       "apiVersion": "2018-04-01",
       "type": "Microsoft.Network/virtualNetworkGateways",
       "name": "[parameters('gatewayName')]",
+      "tags": {
+        "Application": "VPN Connectivity",
+        "Department": "Core Infrastructure Test"
+
+      },
       "location": "[resourceGroup().location]",
       "properties": {
         "ipConfigurations": [

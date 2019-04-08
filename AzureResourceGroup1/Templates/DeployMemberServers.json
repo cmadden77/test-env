@@ -134,7 +134,11 @@
         "name": "memberVmCopy",
         "count": "[variables('DeployCount')]"
       },
-      "tags": { "displayName": "VM" },
+      "tags": {
+        "Application": "Member Server",
+        "Department": "Core Infrastructure Test",
+        "Startup": "Tier3"
+      },
       "dependsOn": [
         "NicCopy"
       ],

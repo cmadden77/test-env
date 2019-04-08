@@ -130,7 +130,11 @@
         "name": "adcVmCopy",
         "count": "[variables('adcDeployCount')]"
       },
-      "tags": { "displayName": "adcVM" },
+      "tags": {
+        "Application": "ActiveDirectoryConnector",
+        "Department": "Core Infrastructure Test",
+        "Startup": "Tier3"
+      },
       "dependsOn": [
         "adcNicCopy"
       ],

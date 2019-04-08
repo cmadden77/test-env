@@ -200,7 +200,11 @@
         "name": "adfsVmCopy",
         "count": "[variables('adfsDeployCount')]"
       },
-      "tags": { "displayName": "adfsVM" },
+      "tags": {
+        "Application": "ActiveDirectoryFederationServices",
+        "Department": "Core Infrastructure",
+        "Startup": "Tier2"
+          },
       "dependsOn": [
         "adfsNicCopy"
       ],
@@ -278,7 +282,11 @@
         "name": "wapVmCopy",
         "count": "[variables('adfsDeployCount')]"
       },
-      "tags": { "displayName": "wapVM" },
+      "tags": {
+        "Application": "ActiveDirectoryFederationServices",
+        "Department": "Core Infrastructure Test",
+        "Startup": "Tier2"
+      },
       "dependsOn": [
         "wapNicCopy"
       ],

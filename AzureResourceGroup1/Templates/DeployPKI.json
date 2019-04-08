@@ -125,7 +125,11 @@
         "name": "pkiVmCopy",
         "count": "[variables('pkiDeployCount')]"
       },
-      "tags": { "displayName": "pkiVM" },
+      "tags": {
+        "Application": "ActiveDirectoryCertificateAuthority",
+        "Department": "Core Infrastructure Test",
+        "Startup": "Tier2"
+      },
       "dependsOn": [
         "pkiNicCopy"
       ],

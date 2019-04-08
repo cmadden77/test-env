@@ -125,7 +125,11 @@
         "name": "itcVmCopy",
         "count": "[variables('itcDeployCount')]"
       },
-      "tags": { "displayName": "itcVM" },
+      "tags": {
+        "Application": "Intune Connector Service",
+        "Department": "Core Infrastructure Test",
+        "Startup": "Tier2"
+      },
       "dependsOn": [
         "itcNicCopy"
       ],

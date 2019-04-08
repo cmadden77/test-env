@@ -83,7 +83,10 @@
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[variables('adNicName')]",
       "location": "[parameters('location')]",
-      "tags": { "displayName": "adNIC" },
+      "tags": {
+        "VMName": [ "parameters('adVMName')" ] 
+
+      },
       "dependsOn": [
       ],
       "properties": {
@@ -106,7 +109,12 @@
       "type": "Microsoft.Compute/virtualMachines",
       "name": "[parameters('adVMName')]",
       "location": "[parameters('location')]",
-      "tags": { "displayName": "adVM" },
+      "tags": {
+        "Application": "ActiveDirectory",
+        "Department": "Core Infrastructure Test",
+        "Startup": "Tier1"
+
+      },
       "dependsOn": [
         "[concat('Microsoft.Network/networkInterfaces/', variables('adNicName'))]"
       ],

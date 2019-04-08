@@ -25,7 +25,9 @@
       "name": "[parameters('virtualNetworkName')]",
       "type": "Microsoft.Network/virtualNetworks",
       "location": "[variables('location')]",
-      "tags": { "displayName": "virtualNetwork" },
+      "tags": {
+        "Department": "Core Infrastructure Test"
+      },
       "apiVersion": "2015-06-15",
       "properties": {
         "addressSpace": {
