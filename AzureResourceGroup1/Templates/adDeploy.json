@@ -79,28 +79,12 @@
   },
   "resources": [
     {
-      "name": "[variables('adPubIPName')]",
-      "type": "Microsoft.Network/publicIPAddresses",
-      "location": "[parameters('location')]",
-      "apiVersion": "2015-06-15",
-      "tags": {
-        "displayName": "adPubIP"
-      },
-      "properties": {
-        "publicIPAllocationMethod": "Dynamic",
-        "dnsSettings": {
-          "domainNameLabel": "[tolower(concat(parameters('adVMName'), parameters('deploymentNumber')))]"
-        }
-      }
-    },
-    {
       "apiVersion": "2015-06-15",
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[variables('adNicName')]",
       "location": "[parameters('location')]",
       "tags": { "displayName": "adNIC" },
       "dependsOn": [
-        "[resourceId('Microsoft.Network/publicIPAddresses', variables('adPubIPName'))]"
       ],
       "properties": {
         "ipConfigurations": [
@@ -111,10 +95,7 @@
               "subnet": {
                 "id": "[variables('adSubnetID')]"
               },
-              "privateIPAddress": "[parameters('adIP')]",
-              "publicIPAddress": {
-                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('adPubIPName'))]"
-              }
+              "privateIPAddress": "[parameters('adIP')]"
             }
           }
         ]
