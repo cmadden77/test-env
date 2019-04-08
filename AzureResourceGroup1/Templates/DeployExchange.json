@@ -98,6 +98,7 @@
     "publicIPAddressType": "Dynamic",
     "subnetName": "[tolower(concat('sn', resourceGroup().name))]",
     "uniqueDnsNameForPublicIP": "[tolower(concat('dns', resourceGroup().name))]",
+    "calcuniqueStorageAccountName": "[replace(resourceGroup().name,'-', '')]",
     "uniqueStorageAccountName": "[tolower(concat('sa', resourceGroup().name))]",
     "uniqueStorageAccountContainerName": "[tolower(concat('sc', resourceGroup().name))]",
     "location": "[resourceGroup().location]",

@@ -47,62 +47,62 @@
     "virtualNetworkAddressRange": {
       "type": "string",
       "metadata": { "description": "The address range of the new virtual network in CIDR format" },
-      "defaultValue": "10.199.0.0/16"
+      "defaultValue": "10.80.0.0/16"
     },
     "adSubnetAddressRange": {
       "type": "string",
       "metadata": { "description": "The address range of the desired subnet for Active Directory." },
-      "defaultValue": "10.199.1.0/24"
+      "defaultValue": "10.80.1.0/24"
     },
     "GatewaySubnetAddressRange": {
       "type": "string",
       "metadata": { "description": "The address range of the desired subnet for the gateway (VPN)." },
-      "defaultValue": "10.199.0.0/24"
+      "defaultValue": "10.80.0.0/24"
     },
     "adIP": {
       "type": "string",
-      "metadata": { "description": "The IP Addresses assigned to the domain controllers (a, b). Remember the first IP in a subnet is .4 e.g. 10.199.0.0/16 reserves 10.199.0.0-3. Specify one IP per server - must match numberofVMInstances or deployment will fail." },
-      "defaultValue": "10.199.1.4"
+      "metadata": { "description": "The IP Addresses assigned to the domain controllers (a, b). Remember the first IP in a subnet is .4 e.g. 10.80.0.0/16 reserves 10.80.0.0-3. Specify one IP per server - must match numberofVMInstances or deployment will fail." },
+      "defaultValue": "10.80.1.4"
     },
     "adfsIP": {
       "type": "string",
-      "metadata": { "description": "The IP Addresses assigned to the domain controllers (a, b). Remember the first IP in a subnet is .4 e.g. 10.199.0.0/16 reserves 10.199.0.0-3. Specify one IP per server - must match numberofVMInstances or deployment will fail." },
-      "defaultValue": "10.199.1.5"
+      "metadata": { "description": "The IP Addresses assigned to the domain controllers (a, b). Remember the first IP in a subnet is .4 e.g. 10.80.0.0/16 reserves 10.80.0.0-3. Specify one IP per server - must match numberofVMInstances or deployment will fail." },
+      "defaultValue": "10.80.1.5"
     },
     "adcIP": {
       "type": "string",
-      "metadata": { "description": "The IP Addresses assigned to the domain controllers (a, b). Remember the first IP in a subnet is .4 e.g. 10.199.0.0/16 reserves 10.199.0.0-3. Specify one IP per server - must match numberofVMInstances or deployment will fail." },
-      "defaultValue": "10.199.1.7"
+      "metadata": { "description": "The IP Addresses assigned to the domain controllers (a, b). Remember the first IP in a subnet is .4 e.g. 10.80.0.0/16 reserves 10.80.0.0-3. Specify one IP per server - must match numberofVMInstances or deployment will fail." },
+      "defaultValue": "10.80.1.7"
     },
     "exchangeIP": {
       "type": "string",
-      "metadata": { "description": "The IP Addresses assigned to the domain controllers (a, b). Remember the first IP in a subnet is .4 e.g. 10.199.0.0/16 reserves 10.199.0.0-3. Specify one IP per server - must match numberofVMInstances or deployment will fail." },
-      "defaultValue": "10.199.1.6"
+      "metadata": { "description": "The IP Addresses assigned to the domain controllers (a, b). Remember the first IP in a subnet is .4 e.g. 10.80.0.0/16 reserves 10.80.0.0-3. Specify one IP per server - must match numberofVMInstances or deployment will fail." },
+      "defaultValue": "10.80.1.6"
     },
     "pkiIP": {
       "type": "string",
-      "metadata": { "description": "The IP Addresses assigned to the domain controllers (a, b). Remember the first IP in a subnet is .4 e.g. 10.199.0.0/16 reserves 10.199.0.0-3. Specify one IP per server - must match numberofVMInstances or deployment will fail." },
-      "defaultValue": "10.199.1.8"
+      "metadata": { "description": "The IP Addresses assigned to the domain controllers (a, b). Remember the first IP in a subnet is .4 e.g. 10.80.0.0/16 reserves 10.80.0.0-3. Specify one IP per server - must match numberofVMInstances or deployment will fail." },
+      "defaultValue": "10.80.1.8"
     },
     "itcIP": {
       "type": "string",
-      "metadata": { "description": "The IP Addresses assigned to the domain controllers (a, b). Remember the first IP in a subnet is .4 e.g. 10.199.0.0/16 reserves 10.199.0.0-3. Specify one IP per server - must match numberofVMInstances or deployment will fail." },
-      "defaultValue": "10.199.1.9"
+      "metadata": { "description": "The IP Addresses assigned to the domain controllers (a, b). Remember the first IP in a subnet is .4 e.g. 10.80.0.0/16 reserves 10.80.0.0-3. Specify one IP per server - must match numberofVMInstances or deployment will fail." },
+      "defaultValue": "10.80.1.9"
     },
     "npsIP": {
       "type": "string",
-      "metadata": { "description": "The IP Addresses assigned to the domain controllers (a, b). Remember the first IP in a subnet is .4 e.g. 10.199.0.0/16 reserves 10.199.0.0-3. Specify one IP per server - must match numberofVMInstances or deployment will fail." },
-      "defaultValue": "10.199.1.10"
+      "metadata": { "description": "The IP Addresses assigned to the domain controllers (a, b). Remember the first IP in a subnet is .4 e.g. 10.80.0.0/16 reserves 10.80.0.0-3. Specify one IP per server - must match numberofVMInstances or deployment will fail." },
+      "defaultValue": "10.80.1.10"
     },
     "dmzSubnetAddressRange": {
       "type": "string",
       "metadata": { "description": "The address range of the desired subnet for the DMZ." },
-      "defaultValue": "10.199.2.0/24"
+      "defaultValue": "10.80.2.0/24"
     },
     "cliSubnetAddressRange": {
       "type": "string",
       "metadata": { "description": "The address range of the desired subnet for clients." },
-      "defaultValue": "10.199.3.0/24"
+      "defaultValue": "10.80.3.0/24"
     },
     "vpnClientAddressPool": {
       "type": "string",
