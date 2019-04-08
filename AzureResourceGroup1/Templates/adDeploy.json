@@ -35,6 +35,9 @@
     "assetLocation": {
       "type": "string"
     },
+    "SASKey": {
+      "type": "string"
+    },
     "location": {
       "type": "string",
       "metadata": { "Description": "The region to deploy the resources into" }
@@ -64,7 +67,7 @@
   },
   "variables": {
     "DeployADTemplate": "DeployAD.ps1",
-    "DeployADTemplateUri": "[concat(parameters('assetLocation'), 'Scripts/DeployAD.ps1')]",
+    "DeployADTemplateUri": "[concat(parameters('assetLocation'), 'Scripts/DeployAD.ps1',parameters('SASKey'))]",
     "adSubnetID": "[concat(variables('vnetID'),'/subnets/', parameters('adSubnetName'))]",
     "imageOffer": "WindowsServer",
     "imagePublisher": "MicrosoftWindowsServer",

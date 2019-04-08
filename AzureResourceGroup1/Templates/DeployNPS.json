@@ -41,6 +41,9 @@
     "assetLocation": {
       "type": "string"
     },
+    "SASKey": {
+      "type": "string"
+    },
     "location": {
       "type": "string",
       "metadata": {

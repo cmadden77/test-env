@@ -41,6 +41,9 @@
     "assetLocation": {
       "type": "string"
     },
+    "SASKey": {
+      "type": "string"
+    },
     "location": {
       "type": "string",
       "metadata": {
@@ -87,7 +90,7 @@
     "imagePublisher": "MicrosoftWindowsServer",
     "imageSKU": "2012-R2-Datacenter",
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
-    "adDSCTemplate": "[concat(parameters('assetLocation'),'DSC/adDSC.zip')]",
+    "adDSCTemplate": "[concat(parameters('assetLocation'),'DSC/adDSC.zip',parameters('SASKey'))]",
     "adDSCConfigurationFunction": "adDSCConfiguration.ps1\\ADConnect"
   },
   "resources": [

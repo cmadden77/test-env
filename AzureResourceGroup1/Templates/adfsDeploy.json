@@ -45,6 +45,9 @@
     "assetLocation": {
       "type": "string"
     },
+    "SASKey": {
+      "type": "string"
+    },
     "dmzSubnetName": {
       "type": "string",
       "defaultValue": "adSubnet"
@@ -93,7 +96,7 @@
     "adfsNetworkArr": "[split(parameters('adfsIP'),'.')]",
     "adfsStartIpNodeAddress": "[int(variables('adfsNetworkArr')[3])]",
     "adfsNetworkString": "[concat(variables('adfsNetworkArr')[0],'.',variables('adfsNetworkArr')[1],'.',variables('adfsNetworkArr')[2],'.')]",
-    "DSCTemplate": "[concat(parameters('assetLocation'),'DSC/adfsDSC.zip')]",
+    "DSCTemplate": "[concat(parameters('assetLocation'),'DSC/adfsDSC.zip',parameters('SASKey'))]",
     "adfsDSCConfigurationFunction": "adfsDSCConfiguration.ps1\\Main",
     "adfsNICName": "[concat('adfs-',parameters('NetworkInterfaceName'),parameters('deploymentNumber'))]",
     "adfsPubIpName": "[concat('ADFSPubIP', parameters('deploymentNumber'))]",

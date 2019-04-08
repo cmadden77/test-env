@@ -48,6 +48,9 @@
     "assetLocation": {
       "type": "string"
     },
+    "SASKey": {
+      "type": "string"
+    },
     "dmzSubnetName": {
       "type": "string",
       "defaultValue": "adSubnet"
@@ -115,18 +118,18 @@
     "adSubnetID": "[concat(variables('vnetID'),'/subnets/',parameters('adSubnetName'))]",
     "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
     "apiVersion": "2015-06-15",
-    "modulesPath": "https://raw.githubusercontent.com/cmadden77/test-env/workinprogress/AzureResourceGroup1/",
+    "modulesPath": "https://pssaaccount1.blob.core.windows.net/deployment/",
     "modulesExchange": "ExchangeDSC.zip",
-    "modulesUrlExchange": "[concat(variables('modulesPath'),'DSC/',variables('modulesExchange'))]",
+    "modulesUrlExchange": "[concat(variables('modulesPath'),'DSC/',variables('modulesExchange'),parameters('SASKey'))]",
     "modulesExchangeData": "Exchange.psd1",
-    "modulesUrlExchangeData": "[concat(variables('modulesPath'),'Scripts/',variables('modulesExchangeData'))]",
+    "modulesUrlExchangeData": "[concat(variables('modulesPath'),'Scripts/',variables('modulesExchangeData'),parameters('SASKey'))]",
     "configurationFunctionExchange": "ExchangeWorkload.ps1\\InstallAndConfigureExchange",
     "nsgName": "[tolower(concat('ng', resourceGroup().name))]",
     "nsgID": "[resourceId('Microsoft.Network/networkSecurityGroups',variables('nsgName'))]",
     "exchangeInstallerPath": "InstallerExchange",
     "exchangeISOUri": "https://download.microsoft.com/download/2/5/8/258D30CF-CA4C-433A-A618-FB7E6BCC4EEE/ExchangeServer2016-x64-cu12.iso",
     "modulesExchangeISODownload": "CSDownloadISO.ps1",
-    "modulesUrlExchangeISODownload": "[concat(variables('modulesPath'),'Scripts/',variables('modulesExchangeISODownload'))]",
+    "modulesUrlExchangeISODownload": "[concat(variables('modulesPath'),'Scripts/',variables('modulesExchangeISODownload'),parameters('SASKey'))]",
     "UCMA4URL": "https://download.microsoft.com/download/2/C/4/2C47A5C1-A1F3-4843-B9FE-84C0032C61EC/UcmaRuntimeSetup.exe",
     "vcredistURL": "https://download.microsoft.com/download/2/E/6/2E61CFA4-993B-4DD4-91DA-3737CD5CD6E3/vcredist_x64.exe",
     "autoShutdownStatus": "Enabled",
