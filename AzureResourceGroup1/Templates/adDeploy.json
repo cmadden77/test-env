@@ -83,10 +83,7 @@
       "type": "Microsoft.Network/networkInterfaces",
       "name": "[variables('adNicName')]",
       "location": "[parameters('location')]",
-      "tags": {
-        "VMName": [ "parameters('adVMName')" ] 
-
-      },
+      "tags": { "displayName": "adNIC" },
       "dependsOn": [
       ],
       "properties": {
