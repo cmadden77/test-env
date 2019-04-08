@@ -9,7 +9,7 @@
     },
     "SASKey": {
       "type": "string",
-      "defaultValue": "?sv=2018-03-28&ss=bfqt&srt=sco&sp=rwdlacup&se=2019-04-08T20:19:37Z&st=2020-04-08T11:19:37Z&spr=https&sig=ziMYSP4zxbKWdJwP%2F5lvGx5lrG8S4cb2udjxUfuTF%2Bk%3D",
+      "defaultValue": "?sv=2018-03-28&si=accesstodeploymentdata&sr=c&sig=cdhqTQSJya%2BGJ1yNziP8SeiXHYppCfxjcW5qFpE0EKY%3D",
       "metadata": { "description": "SAS Key to access container" }
     },
     "adminUsername": {
@@ -157,14 +157,14 @@
     "ExchangeTemplateURI": "[concat(parameters('assetLocation'),'Templates/DeployExchange.json',parameters('SASKey'))]",
     "adfsTemplateURI": "[concat(parameters('assetLocation'),'Templates/adfsDeploy.json',parameters('SASKey'))]",
     "adcTemplateURI": "[concat(parameters('assetLocation'),'Templates/DeployADC.json',parameters('SASKey'))]",
-    "itcTemplateURI": "[concat(parameters('assetLocation'),'Templates/DeployITC.json'),parameters('SASKey')]",
-    "npsTemplateURI": "[concat(parameters('assetLocation'),'Templates/DeployNPS.json'),parameters('SASKey')]",
-    "npsTemplateURI": "[concat(parameters('assetLocation'),'Templates/DeployNPS.json'),parameters('SASKey')]",
-    "pkiTemplateURI": "[concat(parameters('assetLocation'),'Templates/DeployPKI.json'),parameters('SASKey')]",
+    "itcTemplateURI": "[concat(parameters('assetLocation'),'Templates/DeployITC.json',parameters('SASKey'))]",
+    "npsTemplateURI": "[concat(parameters('assetLocation'),'Templates/DeployNPS.json',parameters('SASKey'))]",
+    "pkiTemplateURI": "[concat(parameters('assetLocation'),'Templates/DeployPKI.json',parameters('SASKey'))]",
     "memberTemplateURI": "[concat(parameters('assetLocation'),'Templates/DeployMemberServers.json',parameters('SASKey'))]",
     "nsgTemplateURI": "[concat(parameters('assetLocation'),'Templates/NSGs.json',parameters('SASKey'))]",
     "vpnTemplateURI": "[concat(parameters('assetLocation'),'Templates/DeployVPN.json',parameters('SASKey'))]",
     "vnetTemplateURI": "[concat(parameters('assetLocation'),'Templates/deployVNet.json',parameters('SASKey'))]",
+    "vnetDNSTemplateURI": "[concat(parameters('assetLocation'),'Templates/deployVNetDNS.json',parameters('SASKey'))]",
     "adDSCTemplate": "[concat(parameters('assetLocation'),'DSC/addcDSC.zip',parameters('SASKey'))]",
     "npsDSCTemplate": "[concat(parameters('assetLocation'),'DSC/npsDSC.zip',parameters('SASKey'))]",
     "DeployADFSFarmTemplate": "InstallADFS.ps1",
