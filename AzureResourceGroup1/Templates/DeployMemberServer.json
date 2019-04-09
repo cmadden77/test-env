@@ -1,0 +1,213 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "adSubnetName": {
+      "type": "string",
+      "defaultValue": "adSubnet"
+    },
+    "MemberVMName": {
+      "type": "string",
+      "defaultValue": "TAZMEMBER0"
+    },
+    "adDomainName": {
+      "type": "string",
+      "defaultValue": "vnagases.grp"
+    },
+    "adminPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": "Admin password"
+      }
+    },
+    "adminUsername": {
+      "type": "string",
+      "metadata": {
+        "description": "Admin username"
+      }
+    },
+    "deploymentNumber": {
+      "type": "string",
+      "defaultValue": "1",
+      "metadata": {
+        "description": "When deploying the stack N times, define the instance - this will be appended to some resource names to avoid collisions."
+      }
+    },
+    "assetLocation": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string",
+      "metadata": {
+        "Description": "The region to deploy the resources into"
+      }
+    },
+    "NetworkInterfaceName": {
+      "type": "string",
+      "defaultValue": "NIC-M",
+      "metadata": {
+        "description": "This is the prefix name of the Network interfaces"
+      }
+    },
+    "virtualNetworkName": {
+      "type": "string",
+      "defaultValue": "vnet"
+    },
+    "vmSize": {
+      "type": "string",
+      "defaultValue": "Standard_D1_v2",
+      "metadata": {
+        "description": "This is the allowed list of VM sizes"
+      }
+    },
+    "virtualNetworkAddressRange": {
+      "type": "string",
+      "defaultValue": "10.80.0.0",
+      "metadata": {
+        "description": "This is the allowed list of VM sizes"
+      }
+    },
+    "memberServerCount": {
+      "type": "string",
+      "defaultValue": "2",
+      "allowedValues": [ "1", "2", "3", "4", "5", "6", "7", "8", "9", "10" ],
+      "metadata": { "description": "Additional Servers that will be joined to the domain." }
+    }
+  },
+  "variables": {
+    "DeployCount": "[int(parameters('memberServerCount'))]",
+    "shortDomainName": "[split(parameters('adDomainName'),'.')[0]]",
+    "NICName": "[concat('mem-',parameters('NetworkInterfaceName'),parameters('deploymentNumber'))]",
+    "adSubnetID": "[concat(variables('vnetID'),'/subnets/',parameters('adSubnetName'))]",
+    "VNetNetworkArr": "[split(parameters('virtualNetworkAddressRange'),'.')]",
+    "memberNetworkString": "[concat(variables('VNetNetworkArr')[0],'.',variables('VNetNetworkArr')[1],'.',variables('VNetNetworkArr')[2],'.')]",
+    "memberstartip": "10.80.1.20",
+    "memberNetworkArr": "[split(variables('memberstartip'),'.')]",
+    "memberstartIpNodeAddress": "[int(variables('memberNetworkArr')[3])]",
+    "apiVersion": "2015-06-15",
+    "computeApiVersion": "2016-04-30-preview",
+    "domainJoinOptions": "3",
+    "imageOffer": "WindowsServer",
+    "imagePublisher": "MicrosoftWindowsServer",
+    "imageSKU": "2016-Datacenter",
+    "vnetID": "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworkName'))]",
+    "autoShutdownStatus": "Enabled",
+    "autoShutdownTime": "19:00",
+    "autoShutdownTimeZone": "Eastern Standard Time",
+    "autoShutdownNotificationStatus": "Disabled",
+    "autoShutdownNotificationLocale": "en"
+  },
+  "resources": [
+    {
+      "apiVersion": "[variables('apiVersion')]",
+      "type": "Microsoft.Network/networkInterfaces",
+      "name": "[concat(variables('NICName'), copyIndex())]",
+      "location": "[parameters('location')]",
+      "copy": {
+        "name": "NicCopy",
+        "count": "[variables('DeployCount')]"
+      },
+      "tags": { "displayName": "NIC-Member" },
+      "dependsOn": [
+      ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "[concat('adfsipconfig', parameters('deploymentNumber'), copyIndex())]",
+            "properties": {
+              "privateIPAllocationMethod": "Static",
+              "privateIPAddress": "[concat(variables('memberNetworkString'), add(copyIndex(),variables('memberStartIpNodeAddress')))]",
+              "subnet": {
+                "id": "[variables('adSubnetID')]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "[variables('computeApiVersion')]",
+      "type": "Microsoft.Compute/virtualMachines",
+      "name": "[concat(parameters('MemberVMName'), copyIndex())]",
+      "location": "[parameters('location')]",
+      "copy": {
+        "name": "memberVmCopy",
+        "count": "[variables('DeployCount')]"
+      },
+      "tags": {
+        "Application": "Member Server",
+        "Department": "Core Infrastructure Test",
+        "Startup": "Tier3"
+      },
+      "dependsOn": [
+        "NicCopy"
+      ],
+      "properties": {
+        "hardwareProfile": {
+          "vmSize": "[parameters('vmSize')]"
+        },
+        "osProfile": {
+          "computerName": "[concat(parameters('MemberVMName'), copyIndex())]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "adminPassword": "[parameters('adminPassword')]"
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "[variables('imagePublisher')]",
+            "offer": "[variables('imageOffer')]",
+            "sku": "[variables('imageSKU')]",
+            "version": "latest"
+          },
+          "osDisk": {
+            "caching": "ReadWrite",
+            "createOption": "FromImage"
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceid('Microsoft.Network/networkInterfaces', concat(variables('NICName'), copyIndex()))]"
+            }
+          ]
+        }
+      },
+      "resources": [
+      ]
+    },
+    {
+      "apiVersion": "[variables('apiVersion')]",
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(parameters('MemberVMName'), copyIndex(), '/joindomain')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "memberVmCopy"
+      ],
+      "tags": {
+        "displayName": "memberVMJoin",
+        "isClient": "true"
+      },
+      "copy": {
+        "name": "joinCopy",
+        "count": "[variables('DeployCount')]"
+      },
+      "properties": {
+        "publisher": "Microsoft.Compute",
+        "type": "JsonADDomainExtension",
+        "typeHandlerVersion": "1.3",
+        "autoUpgradeMinorVersion": true,
+        "settings": {
+          "Name": "[parameters('adDomainName')]",
+          "OUPath": "",
+          "User": "[concat(variables('shortDomainName'), '\\', parameters('adminUsername'))]",
+          "Restart": "true",
+          "Options": "[variables('domainJoinOptions')]"
+        },
+        "protectedsettings": {
+          "Password": "[parameters('adminPassword')]"
+        }
+      }
+    }
+  ],
+  "outputs": {
+  }
+}
